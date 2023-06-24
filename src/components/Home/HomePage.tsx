@@ -1,14 +1,9 @@
 import { getRandomName } from 'src/utils/random'
-import { useState, useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import nicknamedb from 'src/assets/data/nickname.json'
 
 export default function HomePage() {
-  const [name, setName] = useState(getRandomName(nicknamedb))
-  const nickname = useRef(name)
-
-  useEffect(() => {
-    console.log(nickname.current)
-  }, [])
+  const nickname = useRef(getRandomName(nicknamedb))
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     nickname.current = e.target.value
@@ -16,8 +11,7 @@ export default function HomePage() {
 
   const handleStart = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
-    setName(nickname.current)
-    console.log(name)
+    console.log(nickname.current)
   }
 
   return (
@@ -37,7 +31,7 @@ export default function HomePage() {
         <span className="mr-2">닉네임</span>
         <input
           type="text"
-          defaultValue={name}
+          defaultValue={nickname.current}
           onChange={handleNicknameChange}
           className="px-2"
         />
