@@ -2,7 +2,7 @@ import { getRandomName } from 'src/utils/random'
 import { useRef } from 'react'
 import nicknamedb from 'src/assets/data/nickname.json'
 import { Flex } from 'src/components/core/Flex'
-import gptImage from 'src/assets/img/gpt.webp'
+import youAreThinkingImage from 'src/assets/img/you-are-t.webp'
 import { ImageWrapper } from 'src/components/common/ImageWrapper'
 
 export default function HomePage() {
@@ -18,12 +18,7 @@ export default function HomePage() {
   }
 
   return (
-    <Flex
-      direction="col"
-      align="center"
-      justify="center"
-      className="w-full px-5"
-    >
+    <Flex direction="col" align="center" justify="center" className="w-full">
       <Flex direction="col" align="center">
         <div className="text-2xl font-semibold drop-shadow-[0_0_40px_#66229C]">
           AI가 판별해준다
@@ -35,7 +30,7 @@ export default function HomePage() {
       <div className="p-5 w-full mb-10">
         <ImageWrapper>
           <img
-            src={gptImage}
+            src={youAreThinkingImage}
             alt="AI가 판별해준다"
             className="object-fill max-w-[500px] w-full rounded-[4px]"
           />
@@ -49,7 +44,7 @@ export default function HomePage() {
           type="text"
           defaultValue={nickname.current}
           onChange={handleNicknameChange}
-          className="px-[0.875rem] py-3 w-full  h-13 bg-white text-black"
+          className="px-[0.875rem] py-3 w-full  h-13 bg-white text-black focus:outline-none"
         />
       </Flex>
       <button

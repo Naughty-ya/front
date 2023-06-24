@@ -6,7 +6,12 @@ export default function Home() {
   //   const [nickname, setNickName] = useState(getRandomName())
 
   return (
-    <Flex direction="col" align="center" justify="center" className="h-full">
+    <Flex
+      direction="col"
+      align="center"
+      justify="center"
+      className="h-full px-5"
+    >
       <HomePage />
       <ShareButtons />
     </Flex>
