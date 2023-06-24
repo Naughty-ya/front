@@ -3,6 +3,10 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        dunggeunmo: ['DungGeunMo'],
+        pretendard: ['Pretendard Variable']
+      },
       colors: {
         gray: {
           50: '#FAFAFA',
