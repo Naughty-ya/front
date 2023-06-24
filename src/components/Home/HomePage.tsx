@@ -1,20 +1,25 @@
 import { getRandomName } from 'src/utils/random'
-import { useRef } from 'react'
+import { useState } from 'react'
 import nicknamedb from 'src/assets/data/nickname.json'
 import { Flex } from 'src/components/core/Flex'
 import youAreThinkingImage from 'src/assets/img/you-are-t.webp'
 import { ImageWrapper } from 'src/components/common/ImageWrapper'
+import { useNavigate } from 'react-router-dom'
 
 export default function HomePage() {
-  const nickname = useRef(getRandomName(nicknamedb))
+  const [nickname, setNickName] = useState(getRandomName(nicknamedb))
+  const navigate = useNavigate()
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    nickname.current = e.target.value
+    if (e.target.value.length <= 10) {
+      setNickName(e.target.value)
+    }
   }
 
   const handleStart = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
-    console.log(nickname.current)
+    // FIXME: result -> chat
+    navigate(`/result?nickname=${nickname}`)
   }
 
   return (
@@ -42,8 +47,9 @@ export default function HomePage() {
         </span>
         <input
           type="text"
-          defaultValue={nickname.current}
+          value={nickname}
           onChange={handleNicknameChange}
+          placeholder="최대 10자 입력"
           className="px-[0.875rem] py-3 w-full  h-13 bg-white text-black focus:outline-none"
         />
       </Flex>

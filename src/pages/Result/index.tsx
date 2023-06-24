@@ -1,13 +1,15 @@
 import resultdb from 'src/assets/data/result.json'
 import { ShareButtons } from 'src/components/common/ShareButtons'
 import { Flex } from 'src/components/core/Flex'
-import { useNavigate } from 'react-router-dom'
 import youAreFealingImage from 'src/assets/img/you-are-f.webp'
 import { ImageWrapper } from 'src/components/common/ImageWrapper'
+import { useQuery } from 'src/hooks/use-query'
 
 export default function Result() {
   const result = resultdb
-  const navigate = useNavigate()
+  const query = useQuery()
+
+  console.log(query.get('nickname'))
 
   return (
     <Flex
