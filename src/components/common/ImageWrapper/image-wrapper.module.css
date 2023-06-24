@@ -1,0 +1,9 @@
+.box {
+  border-image: linear-gradient(to right, #ff55f8, #5b89ff);
+  border-image-slice: 1;
+  border-width: 2px;
+  border-style: solid;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}

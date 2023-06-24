@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import Home from 'src/pages/Home'
 import Chat from 'src/pages/Chat'
 import Result from 'src/pages/Result'
-import './App.css'
+import { Layout } from 'src/components/Layout'
 
 function Router() {
   return (
@@ -15,7 +15,11 @@ function Router() {
 }
 
 function App() {
-  return <Router />
+  return (
+    <Layout>
+      <Router />
+    </Layout>
+  )
 }
 
 export default App

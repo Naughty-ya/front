@@ -6,18 +6,23 @@ export function ShareButtons() {
   return (
     <Flex direction="row" className="gap-3" align="center">
       <IconButton
-        iconName="twitter"
-        className="white bg-blue-400 p-1 rounded-full"
-      />
-      <IconButton
         iconName="kakao"
         id="kakao-link-btn"
-        className="bg-yellow-400 text-gray-800 p-1 rounded-full"
+        iconSize={22}
+        className="bg-yellow-400 text-gray-800 p-3 rounded-full"
         onClick={shareKakaoLink}
       />
       <IconButton
+        iconName="twitter"
+        iconStroke="none"
+        iconSize={22}
+        className="white bg-blue-400 p-3 rounded-full"
+      />
+      <IconButton
         iconName="link"
-        className="bg-green-500 p-1 rounded-full "
+        iconFill="none"
+        iconSize={22}
+        className="bg-[#6387FF] p-3 rounded-full "
         onClick={() => copyClipboard(window.location.href)}
       />
     </Flex>

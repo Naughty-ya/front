@@ -1,6 +1,9 @@
 import { getRandomName } from 'src/utils/random'
 import { useRef } from 'react'
 import nicknamedb from 'src/assets/data/nickname.json'
+import { Flex } from 'src/components/core/Flex'
+import gptImage from 'src/assets/img/gpt.webp'
+import { ImageWrapper } from 'src/components/common/ImageWrapper'
 
 export default function HomePage() {
   const nickname = useRef(getRandomName(nicknamedb))
@@ -15,34 +18,46 @@ export default function HomePage() {
   }
 
   return (
-    <div>
-      <div className="flex flex-col gap-2">
-        <div>AI가 판별해준다</div>
-        <div className="text-5xl">너 T야?</div>
-        <div>neo t yai?</div>
+    <Flex
+      direction="col"
+      align="center"
+      justify="center"
+      className="w-full px-5"
+    >
+      <Flex direction="col" align="center">
+        <div className="text-2xl font-semibold drop-shadow-[0_0_40px_#66229C]">
+          AI가 판별해준다
+        </div>
+        <div className="text-[72px] font-bold drop-shadow-[0_0_40px_#66229C]">
+          너 T야?
+        </div>
+      </Flex>
+      <div className="p-5 w-full mb-10">
+        <ImageWrapper>
+          <img
+            src={gptImage}
+            alt="AI가 판별해준다"
+            className="object-fill max-w-[500px] w-full rounded-[4px]"
+          />
+        </ImageWrapper>
       </div>
-      <div className="my-8 max-w-sm">
-        <img
-          src="https://i.namu.wiki/i/ShTzcoMeHE4voCN_b3hTBqixr8Z2NO_O8XEIFIhN3_7rbIfSdq0hUfUw5GJJoF55QatW6GRiwpI9qbX3tI0Mlg.webp"
-          alt="AI가 판별해준다"
-        />
-      </div>
-      <div>
-        <span className="mr-2">닉네임</span>
+      <Flex className="border-pink border-2 w-full rounded-[4px] mb-6 drop-shadow-[0_0_40px_#66229C]">
+        <span className="shrink-0 self-center p-[0.625rem] px-4 text-base font-semibold text-pink">
+          닉네임
+        </span>
         <input
           type="text"
           defaultValue={nickname.current}
           onChange={handleNicknameChange}
-          className="px-2"
+          className="px-[0.875rem] py-3 w-full  h-13 bg-white text-black"
         />
-      </div>
-
+      </Flex>
       <button
-        className="rounded-[6px] my-8 bg-sky-500 px-8 py-2"
+        className="rounded-[4px] mb-10 h-13 px-8 py-2 bg-gradient-to-r from-[#FF55F8] to-[#5B89FF] text-white font-semibold text-lg w-full drop-shadow-[0_0_40px_#66229C]"
         onClick={handleStart}
       >
         내 T력 테스트하기
       </button>
-    </div>
+    </Flex>
   )
 }
