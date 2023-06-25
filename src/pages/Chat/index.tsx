@@ -1,101 +1,128 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent, useRef, useState } from 'react'
 import questions from '../../assets/data/chat.json'
-import { ChatMessage, ChatHeader, ChatInput } from 'src/components/Chat'
+import {
+  ChatMessage,
+  ChatHeader,
+  ChatInput,
+  ChatChoice
+} from 'src/components/Chat'
+import reactIcon from 'src/assets/react.svg'
+
+type TMessageListItem = {
+  question: string
+  answer: string
+}
 
 export default function Chat() {
-  const [answerValue, setAnserValue] = useState('')
-  const [message, setMessage] = useState([
-    { question: questions[0].question, answer: '' }
-  ])
-  const answerValueHandler = () => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAnserValue(e.target.value)
-  }
-  const [num, setNum] = useState(0)
-  const handleOnClickAnswer = () => {
-    let copy = [...message]
-    copy[num].answer = answerValue
-    copy.push({ question: questions[num + 1].question, answer: '' })
-    setMessage(copy)
-    setAnserValue('')
+  const [userAnswer, setUserAnswer] = useState('')
 
-    setNum(prev => prev + 1)
-    if (message.length === 5) {
-      //서버로 보내는 로직
-      return alert('성공했습니다.')
-    }
+  const [qnaList, setQnaList] = useState([questions[0].question])
+
+  const handleChangeUserAnswer = (e: ChangeEvent<HTMLInputElement>) => {
+    setUserAnswer(e.target.value)
   }
-  console.log('m', message)
+  const index = useRef(1)
+
+  const handleSubmitUserAnswer = (userAnswer: string) => () => {
+    if (index.current === 6) {
+      return
+    }
+    setQnaList([...qnaList, userAnswer, questions[index.current].question])
+    setUserAnswer('')
+    index.current += 1
+    return
+  }
+
+  const handleSubmitChatResult = () => {
+    const list: TMessageListItem[] = []
+
+    for (let i = 0; i < qnaList.length; i += 2) {
+      const obj = {
+        question: qnaList[i],
+        answer: qnaList[i + 1]
+      }
+      list.push(obj)
+    }
+    list.pop()
+  }
+
   return (
-    <div>
-      <div className="bg-blue-500">
-        <ChatHeader />
+    <div id="chat-wrapper">
+      <ChatHeader className="flex items-center mb-10 bg-green-500">
+        <ChatHeader.BackButton onClick={() => {}} />
+        <ChatHeader.Title className="flex-1 mx-auto">너 T야?</ChatHeader.Title>
+      </ChatHeader>
+
+      <div id="chat-message-wrapper" className="p-10 text-black bg-pink-100">
+        <ChatMessage>
+          <ChatMessage.Avatar src={reactIcon} />
+          <div>
+            <ChatMessage.SenderName />
+            {qnaList.map((q, idx) => {
+              if (index.current === 6 && idx === 10) return null
+              return (
+                <ChatMessage.Bubble key={idx} variants="gray">
+                  {q}
+                </ChatMessage.Bubble>
+              )
+            })}
+          </div>
+        </ChatMessage>
+        <ChatMessage>
+          <ChatChoice className="flex gap-3">
+            {questions.map((q, idx) => {
+              if (index.current === 6 && idx === 5) return null
+
+              return (
+                <React.Fragment key={idx}>
+                  {Math.round(qnaList.length / 2) === idx + 1 && (
+                    <>
+                      <ChatChoice.Button
+                        text={q.answerF}
+                        onClick={handleSubmitUserAnswer(q.answerF)}
+                        className="text-blue-500 border border-red-200"
+                      />
+                      <ChatChoice.Button
+                        text={q.answerT}
+                        onClick={handleSubmitUserAnswer(q.answerT)}
+                        className="border border-red-200"
+                      />
+                    </>
+                  )}
+                </React.Fragment>
+              )
+            })}
+          </ChatChoice>
+        </ChatMessage>
       </div>
-      <div id="chat-1">
-        <ChatMessage.Avatar src="" />
-        <div>
-          <ChatMessage.SenderName />
-          <ChatMessage.SenderName />
-          {message.map((q, idx) => (
-            <ChatMessage.Bubble key={idx} variants="gray">
-              {q.question}
-            </ChatMessage.Bubble>
-          ))}
-          {/* {message[0].question === '' && (
-            <ChatMessage.Bubble key={0} variants="gray">
-              {questions[0].question}
-            </ChatMessage.Bubble>
-          )} */}
-        </div>
-      </div>
-      <div>
-        <div>
-          {message.map((q, idx) => (
-            <ChatMessage.Bubble key={idx} variants="gray">
-              {q.answer}
-            </ChatMessage.Bubble>
-          ))}
-          {message[0].answer && (
-            <ChatMessage.Bubble key={0} variants="gray" className="flex gap-3">
-              <span
-                className="border border-red-200"
-                onClick={e => {
-                  setAnserValue(questions[num].answerF)
-                  handleOnClickAnswer(e)
-                }}
-              >
-                {questions[0].answerF}
-              </span>
-              <span className="border border-red-200">
-                {questions[0].answerT}
-              </span>
-            </ChatMessage.Bubble>
-          )}
-          <form>
-            <ChatInput
-              answerValue={answerValue}
-              answerValueHandler={answerValueHandler}
-              className="text-red-800"
-            />
-            <button
-              className="p-5 bg-yellow-100 text-black"
-              disabled={answerValue === ''}
-              onClick={e => {
-                e.preventDefault()
-                handleOnClickAnswer(e)
-              }}
-            >
-              전송
-            </button>
-          </form>
-        </div>
-      </div>
+      {qnaList.length >= 10 ? (
+        <button type="button" onClick={handleSubmitChatResult}>
+          최종어쩌꾸버튼
+        </button>
+      ) : (
+        <form
+          onClick={e => {
+            e.preventDefault()
+          }}
+          id="chat-form"
+          className="mt-10"
+        >
+          <ChatInput
+            className="text-red-800"
+            value={userAnswer}
+            maxLength={50}
+            onChange={handleChangeUserAnswer}
+            placeholder="직접 작성하기"
+          />
+          <button
+            className="p-5 text-black bg-yellow-100"
+            onClick={handleSubmitUserAnswer(userAnswer)}
+            disabled={!userAnswer}
+          >
+            전송
+          </button>
+        </form>
+      )}
     </div>
   )
 }
-/**
- 1.질문지가 나오고 답볍 키워드 들이 나왔을떄 
- 2. 답변을 클릭했을떄 answer 에 들어가야함
- 3. 클릭 후 다음 질문지와 답변지가 떠야함
- 4. 직접입력 후 에도 질문지와 답변지가 떠야함 
- 5. 위 기능이 다 되었을때 서버로 전송 후 콘솔로 결과 값 확인되면 result page 작성
- */
