@@ -18,11 +18,11 @@ export function shareKakaoLink() {
     objectType: 'feed',
     content: {
       title: '너 T야?',
-      description: 'AI가 판별해주는 나의 T 성향',
+      description: 'AI가 판별해주는 나의 T 성향!',
       imageUrl:
         'http://k.kakaocdn.net/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
       link: {
-        webUrl: import.meta.env.VITE_KAKAO_SHARE_URL
+        webUrl: import.meta.env.VITE_SHARE_URL
       }
     },
     buttons: [
@@ -44,4 +44,8 @@ export function shareKakaoLink() {
   })
 }
 
-export function shareTwitter() {}
+export function shareTwitter() {
+  const text = '너 T야? - AI가 판별해주는 나의 T 성향!'
+  const url = import.meta.env.VITE_SHARE_URL
+  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`)
+}
