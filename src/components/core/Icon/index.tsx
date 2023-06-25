@@ -10,7 +10,13 @@ interface IconProps extends ComponentPropsWithoutRef<'svg'> {
 }
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>((props, ref) => {
-  const { name, size = 24, color = 'currentColor', ...rest } = props
+  const {
+    name,
+    size = 24,
+    fill = 'currentColor',
+    stroke = 'currentColor',
+    ...rest
+  } = props
   const IconComponent = iconMap[name]
 
   return (
@@ -18,8 +24,8 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>((props, ref) => {
       ref={ref}
       width={size}
       height={size}
-      fill={color}
-      stroke={color}
+      fill={fill}
+      stroke={stroke}
       {...rest}
     />
   )

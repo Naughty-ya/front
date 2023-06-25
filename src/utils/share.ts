@@ -7,9 +7,20 @@ export async function copyClipboard(text: string) {
 }
 
 export function shareKakaoLink() {
-  window.Kakao.Link.createCustomButton({
-    container: '#kakao-link-btn',
-    templateId: 73967,
-    templateArgs: {}
+  const kakao = window.Kakao
+  const key = import.meta.env.VITE_KAKAO_JS_KEY
+
+  if (!kakao.isInitialized()) {
+    kakao.init(key)
+  }
+
+  kakao.Share.sendDefault({
+    objectType: 'text',
+    text: '',
+    link: {
+      // TODO: url 수정
+      mobileWebUrl: 'https://example.com',
+      webUrl: 'https://example.com'
+    }
   })
 }

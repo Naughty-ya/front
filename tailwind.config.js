@@ -3,6 +3,18 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        dunggeunmo: ['DungGeunMo'],
+        pretendard: ['Pretendard Variable']
+      },
+      backgroundImage: {
+        gra: 'linear-gradient(135deg, #FF55F8 0%, #5B89FF 100%)',
+        'gra-20':
+          'linear-gradient(135deg, rgba(201, 85, 255, 0.20) 0%, rgba(91, 137, 255, 0.20) 100%)'
+      },
+      dropShadow: {
+        1: '0 0 40px #66229C'
+      },
       colors: {
         gray: {
           50: '#FAFAFA',
@@ -75,6 +87,11 @@ export default {
           700: '#992626',
           800: '#731A1A',
           900: '#4D0D0D'
+        },
+        brand: {
+          pink: '#FF52FF',
+          darkpink: '#DB61FA',
+          blue: '#6387FF'
         }
       }
     }
