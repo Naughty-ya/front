@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { useState, HTMLAttributes, ReactNode } from 'react'
+import { HTMLAttributes, ReactNode } from 'react'
 
 interface IAvatar extends HTMLAttributes<HTMLImageElement> {
   src?: string
@@ -9,7 +9,7 @@ interface IAvatar extends HTMLAttributes<HTMLImageElement> {
 function Avatar({ src, ...others }: IAvatar) {
   return (
     <div>
-      <img src={src} alt="대충 지피티사진" {...others} />
+      <img src={src} alt="대충 지피티사진" className="w-8 h-8" {...others} />
     </div>
   )
 }
@@ -34,12 +34,17 @@ interface ISenderName extends HTMLAttributes<HTMLDivElement> {
 }
 
 function SenderName({ nickname }: ISenderName) {
-  return <div>{nickname || '지피티'}</div>
+  return <div className="text-white w-fit">{nickname || '지피티'}</div>
 }
 
 function Bubble({ type, children, ...others }: IBubble) {
   return (
-    <div className={`px-3 py-2 text-center bg-white mb-3 rounded`} {...others}>
+    <div
+      className={`w-fit px-3 py-2 text-center bg-white mb-3 rounded ${
+        type === 'user' && `bg-pink-400 text-white self-end`
+      }`}
+      {...others}
+    >
       {children}
     </div>
   )

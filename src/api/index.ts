@@ -1,10 +1,7 @@
 export class FetchClient {
-  constructor() {}
-
-  /* eslint-disable */
-
   private async request(url: string, options?: RequestInit): Promise<any> {
     const headers = {
+      Accept: 'application/json',
       'Content-Type': 'application/json'
     }
 
@@ -13,16 +10,13 @@ export class FetchClient {
       ...options
     }
 
-    const response = await fetch(
-      `${import.meta.env.BASE_URL}${url}`,
-      requestOptions
-    )
+    const response = await fetch(`${url}`, requestOptions)
     const data = await response.json()
 
     if (response?.status === 400) {
       throw new Error(data.error || 'Request failed')
     }
-
+    console.log(data)
     return data
   }
 

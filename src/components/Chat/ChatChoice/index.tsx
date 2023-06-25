@@ -7,7 +7,12 @@ interface IChatChoiceButton extends HTMLAttributes<HTMLButtonElement> {
 
 function ChatChoiceButton({ text, onClick, ...others }: IChatChoiceButton) {
   return (
-    <button onClick={onClick} type="button" {...others}>
+    <button
+      onClick={onClick}
+      type="button"
+      className={`border px-4 py-2.5 rounded-full text-white border-white whitespace-nowrap`}
+      {...others}
+    >
       {text}
     </button>
   )
