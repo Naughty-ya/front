@@ -1,3 +1,4 @@
+/*
 import React, { useEffect, useState } from 'react'
 import questions from '../../assets/data/chat.json'
 import { ChatMessage, ChatHeader, ChatInput } from 'src/components/Chat'
@@ -105,3 +106,4 @@ export default function Chat() {
     </div>
   )
 }
+*/

@@ -25,7 +25,7 @@ function UndoButton({ ...others }: IUndoButton) {
 }
 
 interface IBubble extends HTMLAttributes<HTMLDivElement> {
-  variants?: 'gray' | 'blue'
+  type?: 'system' | 'user'
   children: ReactNode
 }
 
@@ -37,9 +37,9 @@ function SenderName({ nickname }: ISenderName) {
   return <div>{nickname || '지피티'}</div>
 }
 
-function Bubble({ variants, children, ...others }: IBubble) {
+function Bubble({ type, children, ...others }: IBubble) {
   return (
-    <div className={`px-4 py-2 border bg-${variants} text-center`} {...others}>
+    <div className={`px-3 py-2 text-center bg-white mb-3 rounded`} {...others}>
       {children}
     </div>
   )

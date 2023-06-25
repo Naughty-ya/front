@@ -4,7 +4,8 @@ import {
   ChatMessage,
   ChatHeader,
   ChatInput,
-  ChatChoice
+  ChatChoice,
+  ChatSubmitButton
 } from 'src/components/Chat'
 import reactIcon from 'src/assets/react.svg'
 
@@ -12,6 +13,10 @@ type TMessageListItem = {
   question: string
   answer: string
 }
+
+const MAX_QNA_LENGTH = 5
+const NEXT_INDEX = 1
+const TOTAL = 10
 
 export default function Chat() {
   const [userAnswer, setUserAnswer] = useState('')
@@ -24,7 +29,7 @@ export default function Chat() {
   const index = useRef(1)
 
   const handleSubmitUserAnswer = (userAnswer: string) => () => {
-    if (index.current === 6) {
+    if (MAX_QNA_LENGTH < index.current) {
       return
     }
     setQnaList([...qnaList, userAnswer, questions[index.current].question])
@@ -36,10 +41,10 @@ export default function Chat() {
   const handleSubmitChatResult = () => {
     const list: TMessageListItem[] = []
 
-    for (let i = 0; i < qnaList.length; i += 2) {
+    for (let i = NEXT_INDEX; i < qnaList.length; i += NEXT_INDEX) {
       const obj = {
         question: qnaList[i],
-        answer: qnaList[i + 1]
+        answer: qnaList[i + NEXT_INDEX]
       }
       list.push(obj)
     }
@@ -48,34 +53,70 @@ export default function Chat() {
 
   return (
     <div id="chat-wrapper">
-      <ChatHeader className="flex items-center mb-10 bg-green-500">
+      <ChatHeader className="flex items-center py-6 mb-10 bg-black">
         <ChatHeader.BackButton onClick={() => {}} />
-        <ChatHeader.Title className="flex-1 mx-auto">너 T야?</ChatHeader.Title>
+        <ChatHeader.Title className="flex-1 mx-auto text-xl font-bold">
+          너 T야?
+        </ChatHeader.Title>
       </ChatHeader>
 
       <div id="chat-message-wrapper" className="p-10 text-black bg-pink-100">
         <ChatMessage>
           <ChatMessage.Avatar src={reactIcon} />
+          <div id="chat-message-default-system">
+            <ChatMessage.SenderName />
+            <ChatMessage.Bubble type="system">안녕 쿠키</ChatMessage.Bubble>
+            <ChatMessage.Bubble type="system">
+              지금부터 내가 5가지 질문을 할 거야
+            </ChatMessage.Bubble>
+            <ChatMessage.Bubble type="system">
+              솔직하게 대답해줘
+            </ChatMessage.Bubble>
+          </div>
+          <div id="chat-message-default-user">
+            <ChatMessage.Bubble type="user">응</ChatMessage.Bubble>
+          </div>
+        </ChatMessage>
+        <ChatMessage>
+          <ChatMessage.Avatar src={reactIcon} />
           <div>
             <ChatMessage.SenderName />
+
             {qnaList.map((q, idx) => {
-              if (index.current === 6 && idx === 10) return null
+              if (MAX_QNA_LENGTH < index.current && idx === TOTAL) return null
               return (
-                <ChatMessage.Bubble key={idx} variants="gray">
-                  {q}
-                </ChatMessage.Bubble>
+                <>
+                  <ChatMessage.Bubble
+                    key={idx}
+                    type={idx % 2 === 0 ? 'system' : 'user'}
+                  >
+                    {q}
+                  </ChatMessage.Bubble>
+                  {idx % 2 !== 0 ? <ChatMessage.UndoButton /> : null}
+                </>
               )
             })}
           </div>
         </ChatMessage>
-        <ChatMessage>
+      </div>
+      {qnaList.length >= 10 ? (
+        <ChatSubmitButton onClick={handleSubmitChatResult} />
+      ) : (
+        <form
+          onClick={e => {
+            e.preventDefault()
+          }}
+          id="chat-form"
+          className="mt-10"
+        >
           <ChatChoice className="flex gap-3">
             {questions.map((q, idx) => {
-              if (index.current === 6 && idx === 5) return null
+              if (MAX_QNA_LENGTH < index.current && idx === MAX_QNA_LENGTH)
+                return null
 
               return (
                 <React.Fragment key={idx}>
-                  {Math.round(qnaList.length / 2) === idx + 1 && (
+                  {Math.round(qnaList.length / 2) === idx + NEXT_INDEX && (
                     <>
                       <ChatChoice.Button
                         text={q.answerF}
@@ -93,26 +134,12 @@ export default function Chat() {
               )
             })}
           </ChatChoice>
-        </ChatMessage>
-      </div>
-      {qnaList.length >= 10 ? (
-        <button type="button" onClick={handleSubmitChatResult}>
-          최종어쩌꾸버튼
-        </button>
-      ) : (
-        <form
-          onClick={e => {
-            e.preventDefault()
-          }}
-          id="chat-form"
-          className="mt-10"
-        >
           <ChatInput
             className="text-red-800"
             value={userAnswer}
             maxLength={50}
             onChange={handleChangeUserAnswer}
-            placeholder="직접 작성하기"
+            placeholder="이럴때 나는?"
           />
           <button
             className="p-5 text-black bg-yellow-100"
