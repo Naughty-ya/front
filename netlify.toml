@@ -1,0 +1,5 @@
+[[redirects]]
+from = "/proxy*"
+to = "https://gj3qocj6m6xlsq5fjkavutyhr40mdeep.lambda-url.ap-northeast-2.on.aws/"
+status=200
+force=true
