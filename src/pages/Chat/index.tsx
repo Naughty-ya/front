@@ -108,7 +108,7 @@ export default function Chat() {
     setLsLoading(true)
     try {
       const data = await new FetchClient().post(
-        'https://gj3qocj6m6xlsq5fjkavutyhr40mdeep.lambda-url.ap-northeast-2.on.aws/',
+        'https://36naf0ynve.execute-api.ap-northeast-2.amazonaws.com/default/naughty-ya/',
         {
           list: resultData
         }
