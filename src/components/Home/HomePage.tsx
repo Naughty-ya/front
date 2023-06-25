@@ -3,7 +3,7 @@ import { useState } from 'react'
 import nicknamedb from 'src/assets/data/nickname.json'
 import { Flex } from 'src/components/core/Flex'
 import youAreThinkingImage from 'src/assets/img/you-are-t.webp'
-import { ImageWrapper } from 'src/components/common/ImageWrapper'
+import { GradientWrapper } from 'src/components/common/GradientWrapper'
 import { useNavigate } from 'react-router-dom'
 
 export default function HomePage() {
@@ -33,13 +33,13 @@ export default function HomePage() {
         </div>
       </Flex>
       <div className="p-5 w-full mb-10">
-        <ImageWrapper>
+        <GradientWrapper>
           <img
             src={youAreThinkingImage}
             alt="AI가 판별해준다"
             className="object-fill max-w-[500px] w-full rounded-[4px]"
           />
-        </ImageWrapper>
+        </GradientWrapper>
       </div>
       <Flex className="border-brand-pink border-2 w-full rounded-[4px] mb-6 drop-shadow-1">
         <span className="shrink-0 self-center p-[0.625rem] px-4 text-base font-semibold text-brand-pink">
