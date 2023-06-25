@@ -170,7 +170,7 @@ export default function Chat() {
             )}
             {timestamp > 1 && (
               <ChatMessage.Bubble type="system">
-                안녕 {nickname}
+                안녕 {nickname}.
               </ChatMessage.Bubble>
             )}
             {timestamp > 2 && (
