@@ -1,5 +1,5 @@
 [[redirects]]
 from = "/proxy/*"
-to = "https://gj3qocj6m6xlsq5fjkavutyhr40mdeep.lambda-url.ap-northeast-2.on.aws/"
+to = "https://ethssfzmm3.execute-api.ap-northeast-2.amazonaws.com/default/naughty-ya"
 status=200
 force=true
