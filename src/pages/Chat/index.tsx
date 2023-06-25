@@ -1,4 +1,11 @@
-import React, { ChangeEvent, useRef, useState, useMemo, useEffect } from 'react'
+import React, {
+  ChangeEvent,
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+  SyntheticEvent
+} from 'react'
 import questions from '../../assets/data/chat.json'
 import {
   ChatMessage,
@@ -25,6 +32,7 @@ type TMessageListItem = {
 const MAX_QNA_LENGTH = 5
 const NEXT_INDEX = 1
 const TOTAL = 10
+const CHAT_DELAY = 1000
 
 export default function Chat() {
   const [userAnswer, setUserAnswer] = useState('')
@@ -32,6 +40,23 @@ export default function Chat() {
   const [isLoading, setLsLoading] = useState(false)
   const nickname = useQuery().get('nickname')
   const navigate = useNavigate()
+
+  if (!nickname || nickname === 'null') {
+    navigate('/')
+  }
+
+  const [timestamp, setTimestamp] = useState(0)
+  const isDefaultChatFinished = useMemo(() => timestamp === 6, [timestamp])
+
+  useEffect(() => {
+    let time = setInterval(() => {
+      setTimestamp(pre => pre + 1)
+    }, CHAT_DELAY)
+
+    if (timestamp === 6) clearInterval(time)
+
+    return () => clearInterval(time)
+  }, [timestamp])
 
   // navigate('/', { list: '리스트' })
 
@@ -86,11 +111,12 @@ export default function Chat() {
   2. 로딩 UI가 표시된다. 2초동안.
   3. response값을 가지고 result 페이지로 라우팅한다.
 */
-
+  //https://gj3qocj6m6xlsq5fjkavutyhr40mdeep.lambda-url.ap-northeast-2.on.aws/
   const handleSubmitChatResult = async (resultData: TMessageListItem[]) => {
+    setLsLoading(true)
     try {
       const data = await new FetchClient().post(
-        'http://localhost:3000/openai',
+        'https://gj3qocj6m6xlsq5fjkavutyhr40mdeep.lambda-url.ap-northeast-2.on.aws/',
         {
           list: resultData
         }
@@ -99,6 +125,7 @@ export default function Chat() {
       setLsLoading(false)
     } catch (e) {
       setLsLoading(false)
+      navigate(`/chat?nickname=${nickname}`)
       throw Error('fetch failed')
     } finally {
       navigate('/result')
@@ -119,7 +146,7 @@ export default function Chat() {
     >
       <ChatHeader className="flex top-0 w-full items-center justify-between h-16 bg-black border-b-[1px] border-gray-600">
         <ChatHeader.BackButton
-          className="w-16 flex flex-row justify-center"
+          className="flex flex-row justify-center w-16"
           onClick={() => {
             navigate('/')
           }}
@@ -132,44 +159,56 @@ export default function Chat() {
 
       <div
         id="chat-message-wrapper"
-        className="text-gray-800 flex-1 py-10 overflow-auto scrollbar-hide p-5"
+        className="flex-1 p-5 py-10 overflow-auto text-gray-800 scrollbar-hide"
       >
         <ChatMessage>
           <div id="chat-message-default-system" className="flex flex-col">
-            <ChatMessage.Profile
-              src={profile}
-              nickname="지피티"
-              className="gap-2 mb-2"
-            />
-            <ChatMessage.Bubble type="system">
-              안녕 {nickname}
-            </ChatMessage.Bubble>
-            <ChatMessage.Bubble type="system">
-              지금부터 내가 5가지 질문을 할 거야
-            </ChatMessage.Bubble>
-            <ChatMessage.Bubble type="system">
-              솔직하게 대답해줘
-            </ChatMessage.Bubble>
+            {timestamp > 1 && (
+              <ChatMessage.Profile
+                src={profile}
+                nickname="지피T"
+                className="gap-2 mb-2"
+              />
+            )}
+            {timestamp > 1 && (
+              <ChatMessage.Bubble type="system">
+                안녕 {nickname}
+              </ChatMessage.Bubble>
+            )}
+            {timestamp > 2 && (
+              <ChatMessage.Bubble type="system">
+                지금부터 내가 5가지 질문을 할 거야
+              </ChatMessage.Bubble>
+            )}
+            {timestamp > 3 && (
+              <ChatMessage.Bubble type="system">
+                솔직하게 대답해줘
+              </ChatMessage.Bubble>
+            )}
           </div>
           <div
             id="chat-message-default-user"
             className="flex flex-col items-end"
           >
-            <ChatMessage.Bubble type="user">응</ChatMessage.Bubble>
+            {timestamp > 4 && (
+              <ChatMessage.Bubble type="user">응</ChatMessage.Bubble>
+            )}
           </div>
         </ChatMessage>
         <ChatMessage>
           <div className="flex flex-col">
-            <ChatMessage.Profile
-              src={profile}
-              nickname="지피티"
-              className="gap-2 mb-2"
-            />
-
             {qnaList.map((q, idx) => {
               if (MAX_QNA_LENGTH < index.current && idx === TOTAL) return null
+              if (!isDefaultChatFinished) return null
               return (
                 <React.Fragment key={idx}>
+                  {idx % 2 === 0 ? (
+                    <ChatMessage.Profile
+                      src={profile}
+                      nickname="지피T"
+                      className="gap-2 mb-2"
+                    />
+                  ) : null}
                   <ChatMessage.Bubble
                     key={idx}
                     type={idx % 2 === 0 ? 'system' : 'user'}
@@ -179,7 +218,7 @@ export default function Chat() {
                   {qnaList.length - 1 === idx && qnaList.length !== 1 && (
                     <ChatMessage.UndoButton
                       onClick={backAnswerHandler}
-                      className="text-white flex items-center justify-center gap-2 text-sm pt-3"
+                      className="flex items-center justify-center gap-2 pt-3 text-sm text-white"
                     />
                   )}
                 </React.Fragment>
@@ -190,7 +229,7 @@ export default function Chat() {
         <div ref={chatBoxRef} />
       </div>
 
-      <div className="py-10 pt-4 w-full">
+      <div className="w-full py-10 pt-4">
         {qnaList.length >= 10 ? (
           <div className="px-5">
             <ChatSubmitButton
@@ -214,34 +253,35 @@ export default function Chat() {
 
                 return (
                   <React.Fragment key={idx}>
-                    {Math.round(qnaList.length / 2) === idx + NEXT_INDEX && (
-                      <>
-                        <ChatChoice.Button
-                          text={q.answerF}
-                          onClick={handleSubmitUserAnswer(q.answerF)}
-                        />
-                        <ChatChoice.Button
-                          text={q.answerT}
-                          onClick={handleSubmitUserAnswer(q.answerT)}
-                        />
-                      </>
-                    )}
+                    {Math.round(qnaList.length / 2) === idx + NEXT_INDEX &&
+                      isDefaultChatFinished && (
+                        <>
+                          <ChatChoice.Button
+                            text={q.answerF}
+                            onClick={handleSubmitUserAnswer(q.answerF)}
+                          />
+                          <ChatChoice.Button
+                            text={q.answerT}
+                            onClick={handleSubmitUserAnswer(q.answerT)}
+                          />
+                        </>
+                      )}
                   </React.Fragment>
                 )
               })}
             </ChatChoice>
             <div className="flex mx-5 h-[52px]">
               <ChatInput
-                className="text-white rounded-[4px] py-2 px-3.5 w-full mr-2"
+                className="text-white bg-gray-600 rounded-[4px] py-2 px-3.5 w-full mr-2"
                 value={userAnswer}
                 maxLength={50}
                 onChange={handleChangeUserAnswer}
-                placeholder="이럴때 나는?"
+                placeholder="이럴 때 나는? (50자 이내)"
               />
               <button
-                className="flex items-center justify-center w-14 shrink-0 bg-brand-blue rounded-[4px]"
+                className="flex items-center justify-center w-14 shrink-0 bg-brand-blue rounded-[4px] disabled:opacity-50"
                 onClick={handleSubmitUserAnswer(userAnswer)}
-                disabled={!userAnswer}
+                disabled={!isDefaultChatFinished || !userAnswer}
               >
                 <Icon name="send" fill="none" stroke="white" />
               </button>
@@ -250,11 +290,17 @@ export default function Chat() {
         )}
       </div>
       {isLoading && (
-        <ChatLoading className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-blue-100 pointer-evente-none opacity-80">
+        <ChatLoading className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-black pointer-evente-none opacity-80">
           <img src={spinnerIcon} alt="로딩 중" className="animate-spin" />
-          <p>잠시 기다려줘 쿠키</p>
+          <p className="text-2xl font-dunggeunmo">{`잠시 기다려줘 ${nickname}`}</p>
         </ChatLoading>
       )}
     </div>
   )
 }
+
+/**
+ * 1. 객관식 버튼 draggable 하게 만들기.
+ * 2. 구글 애널리틱스 추적코드 삽입하기 (선택사항)
+ * 3. 넷틀리파이 배포하기
+ */

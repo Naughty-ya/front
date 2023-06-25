@@ -43,9 +43,10 @@ function SenderName({ nickname }: ISenderName) {
 function Bubble({ type, children, ...others }: IBubble) {
   return (
     <div
-      className={`w-fit px-3 py-2 text-center mb-3 rounded max-w-xs text-black ${
-        type === 'user' ? `bg-brand-darkpink text-white self-end` : `bg-white`
-      }`}
+      className={`w-fit px-3 py-2 break-words mb-3 rounded max-w-xs text-black  
+        ${
+          type === 'user' ? `bg-brand-darkpink text-white self-end` : `bg-white`
+        }`}
       {...others}
     >
       {children}

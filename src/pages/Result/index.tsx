@@ -18,11 +18,10 @@ export default function Result() {
   const result = resultdb
   const query = useQuery()
 
-  console.log(query.get('nickname'))
-
   const averagePercent = 45
   const isThinking = result.percent > 50
   // const brokeThink=
+  // 결과페이지에서 새로고침했을 때 chat에서 받아온 response data없으면 홈으로
 
   return (
     <Layout>
