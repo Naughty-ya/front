@@ -51,7 +51,7 @@ export default function Result() {
             topPercent={data?.rate}
           />
         </Flex>
-        <div className="my-4 bg-[#F5F5F5] text-gray-800 px-5 py-6 font-dunggeunmo mb-10 rounded-[4px] tracking-tight">
+        <div className="my-4 bg-[#F5F5F5] text-gray-800 w-full px-5 py-6 font-dunggeunmo mb-10 rounded-[4px] tracking-tight">
           {data?.message ?? '알 수 없는 오류가 발생했습니다.'}
         </div>
         <ShareButtons />

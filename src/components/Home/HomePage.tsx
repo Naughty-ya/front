@@ -49,11 +49,11 @@ export default function HomePage() {
           value={nickname}
           onChange={handleNicknameChange}
           placeholder="최대 10자 입력"
-          className="px-[0.875rem] py-3 w-full  h-13 bg-white text-black focus:outline-none"
+          className="px-[0.875rem] py-3 w-full h-13 bg-white text-black focus:outline-none"
         />
       </Flex>
       <button
-        className="rounded-[4px] mb-10 h-13 px-8 py-2 bg-gra text-white font-semibold text-lg w-full drop-shadow-1"
+        className="rounded-[4px] mb-10 h-[52px] px-8 py-2 bg-gra text-white font-semibold text-lg w-full drop-shadow-1"
         onClick={handleStart}
       >
         내 T력 테스트하기

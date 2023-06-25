@@ -4,8 +4,6 @@ import HomePage from 'src/components/Home/HomePage'
 import { Layout } from 'src/components/layout/Layout'
 
 export default function Home() {
-  //   const [nickname, setNickName] = useState(getRandomName())
-
   return (
     <Layout>
       <Flex
