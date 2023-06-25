@@ -1,54 +1,64 @@
 import { getRandomName } from 'src/utils/random'
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import nicknamedb from 'src/assets/data/nickname.json'
+import { Flex } from 'src/components/core/Flex'
+import youAreThinkingImage from 'src/assets/img/you-are-t.webp'
+import { GradientWrapper } from 'src/components/common/GradientWrapper'
+import { useNavigate } from 'react-router-dom'
 
 export default function HomePage() {
-  const [name, setName] = useState(getRandomName(nicknamedb))
-  const nickname = useRef(name)
-
-  useEffect(() => {
-    console.log(nickname.current)
-  }, [])
+  const [nickname, setNickName] = useState(getRandomName(nicknamedb))
+  const navigate = useNavigate()
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    nickname.current = e.target.value
+    if (e.target.value.length <= 10) {
+      setNickName(e.target.value)
+    }
   }
 
   const handleStart = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
-    setName(nickname.current)
-    console.log(name)
+    // FIXME: result -> chat
+    navigate(`/result?nickname=${nickname}`)
   }
 
   return (
-    <div>
-      <div className="flex flex-col gap-2">
-        <div>AI가 판별해준다</div>
-        <div className="text-5xl">너 T야?</div>
-        <div>neo t yai?</div>
+    <Flex direction="col" align="center" justify="center" className="w-full">
+      <Flex direction="col" align="center">
+        <div className="text-2xl font-semibold drop-shadow-1">
+          AI가 판별해준다
+        </div>
+        <div className="text-[72px] font-bold drop-shadow-1 font-dunggeunmo">
+          너T야?
+        </div>
+      </Flex>
+      <div className="p-5 w-full mb-10">
+        <GradientWrapper>
+          <img
+            src={youAreThinkingImage}
+            alt="AI가 판별해준다"
+            className="object-fill max-w-[500px] w-full rounded-[4px]"
+          />
+        </GradientWrapper>
       </div>
-      <div className="my-8 max-w-sm">
-        <img
-          src="https://i.namu.wiki/i/ShTzcoMeHE4voCN_b3hTBqixr8Z2NO_O8XEIFIhN3_7rbIfSdq0hUfUw5GJJoF55QatW6GRiwpI9qbX3tI0Mlg.webp"
-          alt="AI가 판별해준다"
-        />
-      </div>
-      <div>
-        <span className="mr-2">닉네임</span>
+      <Flex className="border-brand-pink border-2 w-full rounded-[4px] mb-6 drop-shadow-1">
+        <span className="shrink-0 self-center p-[0.625rem] px-4 text-base font-semibold text-brand-pink">
+          닉네임
+        </span>
         <input
           type="text"
-          defaultValue={name}
+          value={nickname}
           onChange={handleNicknameChange}
-          className="px-2"
+          placeholder="최대 10자 입력"
+          className="px-[0.875rem] py-3 w-full  h-13 bg-white text-black focus:outline-none"
         />
-      </div>
-
+      </Flex>
       <button
-        className="rounded-[6px] my-8 bg-sky-500 px-8 py-2"
+        className="rounded-[4px] mb-10 h-13 px-8 py-2 bg-gra text-white font-semibold text-lg w-full drop-shadow-1"
         onClick={handleStart}
       >
         내 T력 테스트하기
       </button>
-    </div>
+    </Flex>
   )
 }
