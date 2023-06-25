@@ -1,6 +1,8 @@
 /* eslint-disable */
 
 import { HTMLAttributes, ReactNode } from 'react'
+import { Flex } from 'src/components/core/Flex'
+import { Icon } from 'src/components/core/Icon'
 
 interface IAvatar extends HTMLAttributes<HTMLImageElement> {
   src?: string
@@ -19,7 +21,8 @@ interface IUndoButton extends HTMLAttributes<HTMLButtonElement> {}
 function UndoButton({ ...others }: IUndoButton) {
   return (
     <button type="button" {...others}>
-      대충 돌리기버튼
+      <Icon name="refresh" size={18} fill="none" />
+      <span>다시 보내기</span>
     </button>
   )
 }
@@ -40,8 +43,8 @@ function SenderName({ nickname }: ISenderName) {
 function Bubble({ type, children, ...others }: IBubble) {
   return (
     <div
-      className={`w-fit px-3 py-2 text-center bg-white mb-3 rounded max-w-xs ${
-        type === 'user' && `bg-pink-400 text-white self-end`
+      className={`w-fit px-3 py-2 mb-3 rounded max-w-xs text-black ${
+        type === 'user' ? `bg-brand-darkpink text-white self-end` : `bg-white`
       }`}
       {...others}
     >
@@ -57,9 +60,23 @@ function ChatMessage({ children, ...others }: IChatMessage) {
   return <div {...others}>{children}</div>
 }
 
+interface IProfile extends HTMLAttributes<HTMLDivElement> {
+  src: string
+  nickname: string
+}
+function Profile({ src, nickname, ...others }: IProfile) {
+  return (
+    <Flex align="center" direction="row" {...others}>
+      <Avatar src={src} />
+      <SenderName nickname={nickname} />
+    </Flex>
+  )
+}
+
 export default Object.assign(ChatMessage, {
   UndoButton,
   SenderName,
   Bubble,
-  Avatar
+  Avatar,
+  Profile
 })

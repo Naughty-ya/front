@@ -7,7 +7,7 @@ interface IChatSubmitButton extends ComponentPropsWithoutRef<'button'> {
 export function ChatSubmitButton({ onClick, ...others }: IChatSubmitButton) {
   return (
     <button type="button" {...others} onClick={onClick}>
-      최종어쩌꾸버튼
+      분석하기
     </button>
   )
 }

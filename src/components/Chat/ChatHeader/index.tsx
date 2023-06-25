@@ -1,5 +1,5 @@
-import React, { HTMLAttributes, ReactNode } from 'react'
-import backbutton from 'src/assets/icons/back.svg'
+import { HTMLAttributes, ReactNode } from 'react'
+import { Icon } from 'src/components/core/Icon'
 
 interface IBackButton extends HTMLAttributes<HTMLButtonElement> {
   onClick: () => void
@@ -8,7 +8,7 @@ interface IBackButton extends HTMLAttributes<HTMLButtonElement> {
 function BackButton({ onClick, ...others }: IBackButton) {
   return (
     <button onClick={onClick} {...others}>
-      <img src={backbutton} alt="뒤로가기" />
+      <Icon name="back" />
     </button>
   )
 }
