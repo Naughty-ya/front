@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { useState, HTMLAttributes, ReactNode } from 'react'
+import { HTMLAttributes, ReactNode } from 'react'
 
 interface IAvatar extends HTMLAttributes<HTMLImageElement> {
   src?: string
@@ -9,7 +9,7 @@ interface IAvatar extends HTMLAttributes<HTMLImageElement> {
 function Avatar({ src, ...others }: IAvatar) {
   return (
     <div>
-      <img src={src} alt="대충 지피티사진" {...others} />
+      <img src={src} alt="대충 지피티사진" className="w-8 h-8" {...others} />
     </div>
   )
 }
@@ -25,7 +25,7 @@ function UndoButton({ ...others }: IUndoButton) {
 }
 
 interface IBubble extends HTMLAttributes<HTMLDivElement> {
-  variants?: 'gray' | 'blue'
+  type?: 'system' | 'user'
   children: ReactNode
 }
 
@@ -34,26 +34,27 @@ interface ISenderName extends HTMLAttributes<HTMLDivElement> {
 }
 
 function SenderName({ nickname }: ISenderName) {
-  return <div>{nickname || '지피티'}</div>
+  return <div className="text-white w-fit">{nickname || '지피티'}</div>
 }
 
-function Bubble({ variants, children, ...others }: IBubble) {
-  const [messages, setMessages] = useState([])
-
+function Bubble({ type, children, ...others }: IBubble) {
   return (
-    <div className={`px-4 py-2 border bg-${variants} text-center`} {...others}>
+    <div
+      className={`w-fit px-3 py-2 text-center bg-white mb-3 rounded max-w-xs ${
+        type === 'user' && `bg-pink-400 text-white self-end`
+      }`}
+      {...others}
+    >
       {children}
     </div>
   )
 }
-function ChatMessage({
-  type,
-  children
-}: {
-  type?: 'user' | 'system'
+
+interface IChatMessage extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
-}) {
-  return { children }
+}
+function ChatMessage({ children, ...others }: IChatMessage) {
+  return <div {...others}>{children}</div>
 }
 
 export default Object.assign(ChatMessage, {

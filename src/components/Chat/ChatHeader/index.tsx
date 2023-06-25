@@ -1,16 +1,35 @@
-import React from 'react'
+import React, { HTMLAttributes, ReactNode } from 'react'
+import backbutton from 'src/assets/icons/back.svg'
 
-const BackButton = () => {
-  return <button>빽</button>
+interface IBackButton extends HTMLAttributes<HTMLButtonElement> {
+  onClick: () => void
 }
 
-const ChatHeader = () => {
+function BackButton({ onClick, ...others }: IBackButton) {
   return (
-    <div className="">
-      <BackButton />
-      <div>너 얼마나 T야?</div>
-    </div>
+    <button onClick={onClick} {...others}>
+      <img src={backbutton} alt="뒤로가기" />
+    </button>
   )
 }
 
-export default ChatHeader
+interface IChatTitle extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode
+}
+
+function ChatTitle({ children, ...others }: IChatTitle) {
+  return <div {...others}>{children}</div>
+}
+
+interface IChatHeader extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode
+}
+
+function ChatHeader({ children, ...others }: IChatHeader) {
+  return <div {...others}>{children}</div>
+}
+
+export default Object.assign(ChatHeader, {
+  BackButton,
+  Title: ChatTitle
+})
