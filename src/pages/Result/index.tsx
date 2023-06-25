@@ -12,13 +12,8 @@ export default function Result() {
   console.log(query.get('nickname'))
 
   return (
-    <Flex
-      className="h-full px-5"
-      direction="col"
-      justify="center"
-      align="center"
-    >
-      <div className="text-2xl font-semibold drop-shadow-[0_0_40px_#66229C]">
+    <Flex className="px-5" direction="col" justify="center" align="center">
+      <div className="text-2xl font-semibold drop-shadow-1">
         AI가 분석한 내 T력
       </div>
       <Flex direction="row" align="end">
@@ -27,10 +22,10 @@ export default function Result() {
         </span>
         <div className="text-[30px] font-dunggeunmo">&#37;</div>
       </Flex>
-      <div className="text-[22px] my-2 font-dunggeunmo text-pink mb-10">
+      <div className="text-[22px] my-2 font-dunggeunmo text-brand-pink mb-10">
         {result.title}
       </div>
-      <div className="px-16 w-full mb-10">
+      <div className="px-8 w-full mb-10">
         <ImageWrapper>
           <img
             src={youAreFealingImage}

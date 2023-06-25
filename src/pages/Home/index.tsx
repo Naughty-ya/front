@@ -10,7 +10,7 @@ export default function Home() {
       direction="col"
       align="center"
       justify="center"
-      className="h-full px-5"
+      className="w-full px-5"
     >
       <HomePage />
       <ShareButtons />

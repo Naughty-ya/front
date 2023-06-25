@@ -25,10 +25,10 @@ export default function HomePage() {
   return (
     <Flex direction="col" align="center" justify="center" className="w-full">
       <Flex direction="col" align="center">
-        <div className="text-2xl font-semibold drop-shadow-[0_0_40px_#66229C]">
+        <div className="text-2xl font-semibold drop-shadow-1">
           AI가 판별해준다
         </div>
-        <div className="text-[72px] font-bold drop-shadow-[0_0_40px_#66229C] font-dunggeunmo">
+        <div className="text-[72px] font-bold drop-shadow-1 font-dunggeunmo">
           너T야?
         </div>
       </Flex>
@@ -41,8 +41,8 @@ export default function HomePage() {
           />
         </ImageWrapper>
       </div>
-      <Flex className="border-pink border-2 w-full rounded-[4px] mb-6 drop-shadow-[0_0_40px_#66229C]">
-        <span className="shrink-0 self-center p-[0.625rem] px-4 text-base font-semibold text-pink">
+      <Flex className="border-brand-pink border-2 w-full rounded-[4px] mb-6 drop-shadow-1">
+        <span className="shrink-0 self-center p-[0.625rem] px-4 text-base font-semibold text-brand-pink">
           닉네임
         </span>
         <input
@@ -54,7 +54,7 @@ export default function HomePage() {
         />
       </Flex>
       <button
-        className="rounded-[4px] mb-10 h-13 px-8 py-2 bg-gradient-to-r from-[#FF55F8] to-[#5B89FF] text-white font-semibold text-lg w-full drop-shadow-[0_0_40px_#66229C]"
+        className="rounded-[4px] mb-10 h-13 px-8 py-2 bg-gra text-white font-semibold text-lg w-full drop-shadow-1"
         onClick={handleStart}
       >
         내 T력 테스트하기

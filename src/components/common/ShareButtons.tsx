@@ -9,20 +9,20 @@ export function ShareButtons() {
         iconName="kakao"
         id="kakao-link-btn"
         iconSize={22}
-        className="bg-yellow-400 text-gray-800 p-3 rounded-full drop-shadow-[0_0_40px_#66229C]"
+        className="bg-yellow-400 text-gray-800 p-3 rounded-full drop-shadow-1"
         onClick={shareKakaoLink}
       />
       <IconButton
         iconName="twitter"
         iconStroke="none"
         iconSize={22}
-        className="white bg-blue-400 p-3 rounded-full drop-shadow-[0_0_40px_#66229C]"
+        className="white bg-blue-400 p-3 rounded-full drop-shadow-1"
       />
       <IconButton
         iconName="link"
         iconFill="none"
         iconSize={22}
-        className="bg-[#6387FF] p-3 rounded-full drop-shadow-[0_0_40px_#66229C]"
+        className="bg-brand-blue p-3 rounded-full drop-shadow-1"
         onClick={() => copyClipboard(window.location.href)}
       />
     </Flex>
