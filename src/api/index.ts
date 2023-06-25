@@ -16,7 +16,6 @@ export class FetchClient {
     if (response?.status === 400) {
       throw new Error(data.error || 'Request failed')
     }
-    console.log(data)
     return data
   }
 

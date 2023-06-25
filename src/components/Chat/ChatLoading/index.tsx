@@ -1,5 +1,4 @@
 import { ReactNode, HTMLAttributes } from 'react'
-
 interface IChatLoading extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode
 }
