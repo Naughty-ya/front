@@ -1,11 +1,4 @@
-import React, {
-  ChangeEvent,
-  useRef,
-  useState,
-  useMemo,
-  useEffect,
-  SyntheticEvent
-} from 'react'
+import React, { ChangeEvent, useRef, useState, useMemo, useEffect } from 'react'
 import questions from '../../assets/data/chat.json'
 import {
   ChatMessage,
@@ -16,7 +9,6 @@ import {
   ChatHeader
 } from 'src/components/Chat'
 import profile from 'src/assets/img/profile.png'
-// import send from 'src/assets/icons/send.svg'
 import spinnerIcon from 'src/assets/icons/spinner.svg'
 import { FetchClient } from 'src/api'
 import { useQuery } from 'src/hooks/use-query'

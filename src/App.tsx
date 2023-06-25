@@ -2,7 +2,6 @@ import { Route, Routes } from 'react-router-dom'
 import Home from 'src/pages/Home'
 import Chat from 'src/pages/Chat'
 import Result from 'src/pages/Result'
-import { Layout } from 'src/components/layout/Layout'
 import { ErrorBoundary } from 'react-error-boundary'
 import errorImg from 'src/assets/img/error.png'
 
