@@ -10,14 +10,5 @@ export default defineConfig({
     alias: {
       src: path.resolve('src/')
     }
-  },
-  server: {
-    proxy: {
-      '/': {
-        target:
-          'https://ethssfzmm3.execute-api.ap-northeast-2.amazonaws.com/default/naughty-ya',
-        changeOrigin: true
-      }
-    }
   }
 })

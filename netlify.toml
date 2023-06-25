@@ -1,5 +1,5 @@
 [[redirects]]
 from = "/proxy/*"
-to = "https://ethssfzmm3.execute-api.ap-northeast-2.amazonaws.com/default/naughty-ya/:splat"
+to = "https://ethssfzmm3.execute-api.ap-northeast-2.amazonaws.com/default/naughty-ya"
 status = 200
 force = true
