@@ -1,42 +1,50 @@
 import resultdb from 'src/assets/data/result.json'
+
 import { ShareButtons } from 'src/components/common/ShareButtons'
 import { Flex } from 'src/components/core/Flex'
-import youAreFealingImage from 'src/assets/img/you-are-f.webp'
 import { GradientWrapper } from 'src/components/common/GradientWrapper'
 import { useQuery } from 'src/hooks/use-query'
 import { StatusBar } from 'src/components/Result/StatusBar'
 
+import youAreFealingImage from 'src/assets/img/you-are-f.webp'
+import youArdThinkingImage from 'src/assets/img/you-are-t.webp'
+import { UserPercent } from 'src/components/Result/UserPercent'
+
 export default function Result() {
+  // TODO: query or state 로 userPercent 받아오기
+  // TODO: api로 averagePercent 받아오기
+
   const result = resultdb
   const query = useQuery()
 
   console.log(query.get('nickname'))
+
+  const averagePercent = 45
+  const isThinking = result.percent >= 50
 
   return (
     <Flex className="px-5" direction="col" justify="center" align="center">
       <div className="text-2xl font-semibold drop-shadow-1">
         AI가 분석한 내 T력
       </div>
-      <Flex direction="row" align="end">
-        <span className="text-[108px] leading-[0.8] font-dunggeunmo">
-          {result.percent}
-        </span>
-        <div className="text-[30px] font-dunggeunmo">&#37;</div>
-      </Flex>
+      <UserPercent percent={result.percent} />
       <div className="text-[22px] my-2 font-dunggeunmo text-brand-pink mb-10">
-        {result.title}
+        {isThinking ? '너T야' : '너T아니야'}
       </div>
       <Flex className="px-8 w-full mb-10 gap-10" direction="col">
         <GradientWrapper>
           <img
-            src={youAreFealingImage}
-            alt="너 T야"
+            src={isThinking ? youArdThinkingImage : youAreFealingImage}
             className="max-w-[500px] w-full rounded-[4px] p-[10px]"
+            alt="t-or-f"
           />
         </GradientWrapper>
-        <StatusBar />
+        <StatusBar
+          userPercent={result.percent}
+          averagePercent={averagePercent}
+        />
       </Flex>
-      <div className="my-4 bg-[#F5F5F5] text-gray-800 px-5 py-6 font-dunggeunmo mb-10 rounded-[4px]">
+      <div className="my-4 bg-[#F5F5F5] text-gray-800 px-5 py-6 font-dunggeunmo mb-10 rounded-[4px] tracking-tight">
         {result.desc}
       </div>
       <ShareButtons />
