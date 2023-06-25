@@ -18,8 +18,7 @@ export default function HomePage() {
 
   const handleStart = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
-    // FIXME: result -> chat
-    navigate(`/result?nickname=${nickname}`)
+    navigate(`/chat?nickname=${nickname}`)
   }
 
   return (
@@ -32,7 +31,7 @@ export default function HomePage() {
           너T야?
         </div>
       </Flex>
-      <div className="p-5 w-full mb-10">
+      <div className="w-full p-5 mb-10">
         <GradientWrapper>
           <img
             src={youAreThinkingImage}

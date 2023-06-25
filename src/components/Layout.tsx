@@ -8,7 +8,7 @@ export function Layout({ children }: React.PropsWithChildren<{}>) {
         backgroundImage: `url(${bg})`
       }}
     >
-      <div className="m-auto py-10 w-full">{children}</div>
+      <div className="m-auto w-full h-full">{children}</div>
     </div>
   )
 }

@@ -3,6 +3,7 @@ import Home from 'src/pages/Home'
 import Chat from 'src/pages/Chat'
 import Result from 'src/pages/Result'
 import { Layout } from 'src/components/Layout'
+import { ErrorBoundary } from 'react-error-boundary'
 
 function Router() {
   return (
@@ -13,12 +14,22 @@ function Router() {
     </Routes>
   )
 }
+function Fallback({ error }: { error: Error }) {
+  return (
+    <div role="alert">
+      <p>Something went wrong:</p>
+      <pre style={{ color: 'red' }}>{error.message}</pre>
+    </div>
+  )
+}
 
 function App() {
   return (
-    <Layout>
-      <Router />
-    </Layout>
+    <ErrorBoundary FallbackComponent={Fallback}>
+      <Layout>
+        <Router />
+      </Layout>
+    </ErrorBoundary>
   )
 }
 

@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, ReactNode } from 'react'
+import { HTMLAttributes, ReactNode } from 'react'
 import backbutton from 'src/assets/icons/back.svg'
 
 interface IBackButton extends HTMLAttributes<HTMLButtonElement> {

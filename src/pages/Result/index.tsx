@@ -20,10 +20,16 @@ export default function Result() {
   console.log(query.get('nickname'))
 
   const averagePercent = 45
-  const isThinking = result.percent >= 50
+  const isThinking = result.percent > 50
+  // const brokeThink=
 
   return (
-    <Flex className="px-5" direction="col" justify="center" align="center">
+    <Flex
+      className="px-5 py-10"
+      direction="col"
+      justify="center"
+      align="center"
+    >
       <div className="text-2xl font-semibold drop-shadow-1">
         AI가 분석한 내 T력
       </div>
@@ -31,7 +37,7 @@ export default function Result() {
       <div className="text-[22px] my-2 font-dunggeunmo text-brand-pink mb-10">
         {isThinking ? '너T야' : '너T아니야'}
       </div>
-      <Flex className="px-8 w-full mb-10 gap-10" direction="col">
+      <Flex className="w-full gap-10 px-8 mb-10" direction="col">
         <GradientWrapper>
           <img
             src={isThinking ? youArdThinkingImage : youAreFealingImage}
