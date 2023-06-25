@@ -36,7 +36,7 @@ export default function HomePage() {
           <img
             src={youAreThinkingImage}
             alt="AI가 판별해준다"
-            className="object-fill max-w-[500px] w-full rounded-[4px]"
+            className="object-fill max-w-[500px] w-full p-3 rounded-[4px]"
           />
         </GradientWrapper>
       </div>

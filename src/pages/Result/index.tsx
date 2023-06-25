@@ -36,7 +36,7 @@ export default function Result() {
           AI가 분석한 내 T력
         </div>
         <UserPercent percent={result.percent} />
-        <div className="text-[22px] my-2 font-dunggeunmo text-brand-pink mb-10">
+        <div className="text-[24px] my-2 font-dunggeunmo text-brand-pink mb-10">
           {isThinking ? '너T야' : '너T아니야'}
         </div>
         <Flex className="w-full gap-10 px-8 mb-10" direction="col">

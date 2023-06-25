@@ -3,6 +3,8 @@ import { IconButton } from 'src/components/core/IconButton'
 import { copyClipboard, shareKakaoLink } from 'src/utils/share'
 
 export function ShareButtons() {
+  // TODO: 카카오 링크 공유하기, 트위터 공유하기, 링크 복사하기 기능 구현
+
   return (
     <Flex direction="row" className="gap-3" align="center">
       <IconButton
