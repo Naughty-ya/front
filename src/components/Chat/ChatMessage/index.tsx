@@ -38,22 +38,18 @@ function SenderName({ nickname }: ISenderName) {
 }
 
 function Bubble({ variants, children, ...others }: IBubble) {
-  const [messages, setMessages] = useState([])
-
   return (
     <div className={`px-4 py-2 border bg-${variants} text-center`} {...others}>
       {children}
     </div>
   )
 }
-function ChatMessage({
-  type,
-  children
-}: {
-  type?: 'user' | 'system'
+
+interface IChatMessage extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
-}) {
-  return { children }
+}
+function ChatMessage({ children, ...others }: IChatMessage) {
+  return <div {...others}>{children}</div>
 }
 
 export default Object.assign(ChatMessage, {

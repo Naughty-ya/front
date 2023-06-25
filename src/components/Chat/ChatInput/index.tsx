@@ -1,24 +1,30 @@
 import React, { HTMLAttributes } from 'react'
 
 interface ChatInputInterFace extends HTMLAttributes<HTMLInputElement> {
-  answerValue: string
-  answerValueHandler: () => (e: React.ChangeEvent<HTMLInputElement>) => void
+  value?: string
+  disabled?: boolean
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  placeholder?: string
+  answerValue?: string
+  maxLength?: number
+  answerValueHandler?: () => (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const ChatInput = ({
-  answerValue,
-  answerValueHandler,
+  value,
+  maxLength,
+  onChange,
+  placeholder,
   ...others
 }: ChatInputInterFace) => {
   return (
-    <>
-      <input
-        placeholder="직접 작성하기"
-        value={answerValue}
-        onChange={answerValueHandler()}
-        {...others}
-      />
-    </>
+    <input
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      maxLength={maxLength}
+      {...others}
+    />
   )
 }
 
