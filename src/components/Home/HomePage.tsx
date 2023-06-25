@@ -36,25 +36,16 @@ export default function HomePage() {
           <img
             src={youAreThinkingImage}
             alt="AI가 판별해준다"
-            className="object-fill max-w-[500px] w-full p-3 rounded-[4px]"
+            className="object-fill min-h-[250px] max-w-[500px] w-full p-3 rounded-[4px]"
           />
         </GradientWrapper>
       </div>
-      <Flex className="border-brand-pink border-2 w-full rounded-[4px] mb-6 drop-shadow-1">
-        <span className="shrink-0 self-center p-[0.625rem] px-4 text-base font-semibold text-brand-pink">
-          닉네임
-        </span>
-        <input
-          type="text"
-          value={nickname}
-          onChange={handleNicknameChange}
-          placeholder="최대 10자 입력"
-          className="px-[0.875rem] py-3 w-full h-13 bg-white text-black focus:outline-none"
-        />
-      </Flex>
-      <button
-        className="rounded-[4px] mb-10 h-[52px] px-8 py-2 bg-gra text-white font-semibold text-lg w-full drop-shadow-1"
-        onClick={handleStart}
+
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+        }}
+        className="w-full"
       >
         <Flex className="border-brand-pink border-2 w-full rounded-[4px] mb-6 drop-shadow-1">
           <span className="shrink-0 self-center p-[0.625rem] px-4 text-base font-semibold text-brand-pink">
