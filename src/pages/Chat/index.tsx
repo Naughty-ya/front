@@ -121,14 +121,12 @@ export default function Chat() {
           list: resultData
         }
       )
-      navigate('/result', data)
+      navigate('/result', { state: data })
       setLsLoading(false)
     } catch (e) {
       setLsLoading(false)
       navigate(`/chat?nickname=${nickname}`)
       throw Error('fetch failed')
-    } finally {
-      navigate('/result')
     }
   }
 
