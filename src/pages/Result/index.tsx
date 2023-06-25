@@ -1,27 +1,26 @@
-import resultdb from 'src/assets/data/result.json'
-
 import { ShareButtons } from 'src/components/common/ShareButtons'
 import { Flex } from 'src/components/core/Flex'
 import { GradientWrapper } from 'src/components/common/GradientWrapper'
-import { useQuery } from 'src/hooks/use-query'
 import { StatusBar } from 'src/components/Result/StatusBar'
 
 import youAreFealingImage from 'src/assets/img/you-are-f.webp'
 import youArdThinkingImage from 'src/assets/img/you-are-t.webp'
+
 import { UserPercent } from 'src/components/Result/UserPercent'
 import { Layout } from 'src/components/layout/Layout'
+import { useLocation } from 'react-router-dom'
+
+type ResultData = {
+  percent?: number
+  average?: number
+  rate?: number
+  message?: string
+}
 
 export default function Result() {
-  // TODO: query or state 로 userPercent 받아오기
-  // TODO: api로 averagePercent 받아오기
+  const data: ResultData = useLocation().state
 
-  const result = resultdb
-  const query = useQuery()
-
-  const averagePercent = 45
-  const isThinking = result.percent > 50
-  // const brokeThink=
-  // 결과페이지에서 새로고침했을 때 chat에서 받아온 response data없으면 홈으로
+  const isThinking = data?.percent ?? 0 > 50
 
   return (
     <Layout>
@@ -34,8 +33,8 @@ export default function Result() {
         <div className="text-2xl font-semibold drop-shadow-1">
           AI가 분석한 내 T력
         </div>
-        <UserPercent percent={result.percent} />
-        <div className="text-[22px] my-2 font-dunggeunmo text-brand-pink mb-10">
+        <UserPercent percent={data?.percent ?? 40} />
+        <div className="text-[24px] my-2 font-dunggeunmo text-brand-pink mb-10">
           {isThinking ? '너T야' : '너T아니야'}
         </div>
         <Flex className="w-full gap-10 px-8 mb-10" direction="col">
@@ -47,12 +46,13 @@ export default function Result() {
             />
           </GradientWrapper>
           <StatusBar
-            userPercent={result.percent}
-            averagePercent={averagePercent}
+            userPercent={data?.percent}
+            averagePercent={data?.average}
+            topPercent={data?.rate}
           />
         </Flex>
-        <div className="my-4 bg-[#F5F5F5] text-gray-800 px-5 py-6 font-dunggeunmo mb-10 rounded-[4px] tracking-tight">
-          {result.desc}
+        <div className="my-4 bg-[#F5F5F5] text-gray-800 w-full px-5 py-6 font-dunggeunmo mb-10 rounded-[4px] tracking-tight">
+          {data?.message ?? '알 수 없는 오류가 발생했습니다.'}
         </div>
         <ShareButtons />
       </Flex>

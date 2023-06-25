@@ -21,7 +21,7 @@ import spinnerIcon from 'src/assets/icons/spinner.svg'
 import { FetchClient } from 'src/api'
 import { useQuery } from 'src/hooks/use-query'
 import { useNavigate } from 'react-router-dom'
-import bg from 'src/assets/img/bg.webp'
+import bg from 'src/assets/img/chat-bg.webp'
 import { Icon } from 'src/components/core/Icon'
 
 type TMessageListItem = {
