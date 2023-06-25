@@ -1,19 +1,21 @@
-import React, { ChangeEvent, useRef, useState, useMemo } from 'react'
+import React, { ChangeEvent, useRef, useState, useMemo, useEffect } from 'react'
 import questions from '../../assets/data/chat.json'
 import {
   ChatMessage,
-  ChatHeader,
   ChatInput,
   ChatChoice,
   ChatSubmitButton,
-  ChatLoading
+  ChatLoading,
+  ChatHeader
 } from 'src/components/Chat'
-import reactIcon from 'src/assets/react.svg'
-import send from 'src/assets/icons/send.svg'
+import profile from 'src/assets/img/profile.png'
+// import send from 'src/assets/icons/send.svg'
 import spinnerIcon from 'src/assets/icons/spinner.svg'
 import { FetchClient } from 'src/api'
 import { useQuery } from 'src/hooks/use-query'
 import { useNavigate } from 'react-router-dom'
+import bg from 'src/assets/img/bg.webp'
+import { Icon } from 'src/components/core/Icon'
 
 type TMessageListItem = {
   question: string
@@ -39,6 +41,20 @@ export default function Chat() {
     setUserAnswer(e.target.value)
   }
   const index = useRef(1)
+  const chatBoxRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end'
+      })
+    }
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [qnaList])
 
   const handleSubmitUserAnswer = (userAnswer: string) => () => {
     if (MAX_QNA_LENGTH < index.current) {
@@ -95,29 +111,36 @@ export default function Chat() {
   }
 
   return (
-    <div id="chat-wrapper px-2 relative">
-      <ChatHeader className="fixed w-full py-4 bg-black max-w-[500px]">
+    <div
+      className="bg-cover relative bg-center max-h-[1000px] h-full w-full max-w-[500px] flex flex-col"
+      style={{
+        backgroundImage: `url(${bg})`
+      }}
+    >
+      <ChatHeader className="flex top-0 w-full items-center justify-between h-16 bg-black border-b-[1px] border-gray-600">
         <ChatHeader.BackButton
-          className="absolute left-6"
+          className="w-16 flex flex-row justify-center"
           onClick={() => {
             navigate('/')
           }}
         />
-        <ChatHeader.Title className="text-xl font-bold text-center ">
-          너 T야?
+        <ChatHeader.Title className="text-xl font-bold ">
+          너 얼마나 T야?
         </ChatHeader.Title>
+        <div className="w-16" />
       </ChatHeader>
 
       <div
         id="chat-message-wrapper"
-        className="p-5 text-black h-[calc(100vh-120px)] overflow-auto max-w-[500px] pt-20"
+        className="text-gray-800 flex-1 py-10 overflow-auto scrollbar-hide p-5"
       >
         <ChatMessage>
           <div id="chat-message-default-system" className="flex flex-col">
-            <div className="flex items-center gap-2 mb-3">
-              <ChatMessage.Avatar src={reactIcon} />
-              <ChatMessage.SenderName />
-            </div>
+            <ChatMessage.Profile
+              src={profile}
+              nickname="지피티"
+              className="gap-2 mb-2"
+            />
             <ChatMessage.Bubble type="system">
               안녕 {nickname}
             </ChatMessage.Bubble>
@@ -137,10 +160,11 @@ export default function Chat() {
         </ChatMessage>
         <ChatMessage>
           <div className="flex flex-col">
-            <div className="flex items-center gap-2 mb-3">
-              <ChatMessage.Avatar src={reactIcon} />
-              <ChatMessage.SenderName />
-            </div>
+            <ChatMessage.Profile
+              src={profile}
+              nickname="지피티"
+              className="gap-2 mb-2"
+            />
 
             {qnaList.map((q, idx) => {
               if (MAX_QNA_LENGTH < index.current && idx === TOTAL) return null
@@ -155,7 +179,7 @@ export default function Chat() {
                   {qnaList.length - 1 === idx && qnaList.length !== 1 && (
                     <ChatMessage.UndoButton
                       onClick={backAnswerHandler}
-                      className="text-white"
+                      className="text-white flex items-center justify-center gap-2 text-sm pt-3"
                     />
                   )}
                 </React.Fragment>
@@ -163,66 +187,68 @@ export default function Chat() {
             })}
           </div>
         </ChatMessage>
+        <div ref={chatBoxRef} />
       </div>
-      {qnaList.length >= 10 ? (
-        <div className="mx-5">
-          <ChatSubmitButton
-            onClick={() => {
-              handleSubmitChatResult(resultData)
-            }}
-            className="w-full px-8 py-2 my-5 text-lg font-semibold text-white rounded bg-gra drop-shadow-1"
-          />
-          {/*  */}
-          {/* */}
-        </div>
-      ) : (
-        <form
-          onClick={e => {
-            e.preventDefault()
-          }}
-          id="chat-form"
-        >
-          <ChatChoice className="flex gap-3 mb-3.5 w-screen overflow-auto max-w-[500px] px-5">
-            {questions.map((q, idx) => {
-              if (MAX_QNA_LENGTH < index.current && idx === MAX_QNA_LENGTH)
-                return null
 
-              return (
-                <React.Fragment key={idx}>
-                  {Math.round(qnaList.length / 2) === idx + NEXT_INDEX && (
-                    <>
-                      <ChatChoice.Button
-                        text={q.answerF}
-                        onClick={handleSubmitUserAnswer(q.answerF)}
-                      />
-                      <ChatChoice.Button
-                        text={q.answerT}
-                        onClick={handleSubmitUserAnswer(q.answerT)}
-                      />
-                    </>
-                  )}
-                </React.Fragment>
-              )
-            })}
-          </ChatChoice>
-          <div className="flex max-w-[500px] px-5">
-            <ChatInput
-              className="text-white rounded py-2 px-3.5 w-full mr-2"
-              value={userAnswer}
-              maxLength={50}
-              onChange={handleChangeUserAnswer}
-              placeholder="이럴때 나는?"
+      <div className="py-10 pt-4 w-full">
+        {qnaList.length >= 10 ? (
+          <div className="px-5">
+            <ChatSubmitButton
+              onClick={() => {
+                handleSubmitChatResult(resultData)
+              }}
+              className="w-full h-[52px] py-2 text-lg font-semibold text-white rounded bg-gra drop-shadow-1"
             />
-            <button
-              className="p-2 bg-blue-500 rounded"
-              onClick={handleSubmitUserAnswer(userAnswer)}
-              disabled={!userAnswer}
-            >
-              <img src={send} alt="전송" />
-            </button>
           </div>
-        </form>
-      )}
+        ) : (
+          <form
+            onClick={e => {
+              e.preventDefault()
+            }}
+            id="chat-form"
+          >
+            <ChatChoice className="flex max-w-[500px] overflow-auto scrollbar-hide gap-3 mb-3.5 px-5">
+              {questions.map((q, idx) => {
+                if (MAX_QNA_LENGTH < index.current && idx === MAX_QNA_LENGTH)
+                  return null
+
+                return (
+                  <React.Fragment key={idx}>
+                    {Math.round(qnaList.length / 2) === idx + NEXT_INDEX && (
+                      <>
+                        <ChatChoice.Button
+                          text={q.answerF}
+                          onClick={handleSubmitUserAnswer(q.answerF)}
+                        />
+                        <ChatChoice.Button
+                          text={q.answerT}
+                          onClick={handleSubmitUserAnswer(q.answerT)}
+                        />
+                      </>
+                    )}
+                  </React.Fragment>
+                )
+              })}
+            </ChatChoice>
+            <div className="flex mx-5 h-[52px]">
+              <ChatInput
+                className="text-white rounded-[4px] py-2 px-3.5 w-full mr-2"
+                value={userAnswer}
+                maxLength={50}
+                onChange={handleChangeUserAnswer}
+                placeholder="이럴때 나는?"
+              />
+              <button
+                className="flex items-center justify-center w-14 shrink-0 bg-brand-blue rounded-[4px]"
+                onClick={handleSubmitUserAnswer(userAnswer)}
+                disabled={!userAnswer}
+              >
+                <Icon name="send" fill="none" stroke="white" />
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
       {isLoading && (
         <ChatLoading className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-blue-100 pointer-evente-none opacity-80">
           <img src={spinnerIcon} alt="로딩 중" className="animate-spin" />

@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import Home from 'src/pages/Home'
 import Chat from 'src/pages/Chat'
 import Result from 'src/pages/Result'
-import { Layout } from 'src/components/Layout'
+import { Layout } from 'src/components/layout/Layout'
 import { ErrorBoundary } from 'react-error-boundary'
 
 function Router() {
@@ -26,9 +26,7 @@ function Fallback({ error }: { error: Error }) {
 function App() {
   return (
     <ErrorBoundary FallbackComponent={Fallback}>
-      <Layout>
-        <Router />
-      </Layout>
+      <Router />
     </ErrorBoundary>
   )
 }
