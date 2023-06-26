@@ -34,3 +34,11 @@ body {
   height: 100%;
   width: 100%;
 }
+
+.Toastify__toast-container {
+  @apply flex items-center justify-center flex-col mx-2;
+}
+
+.Toastify__toast {
+  @apply w-80 mt-2 rounded-md;
+}
