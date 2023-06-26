@@ -75,17 +75,13 @@ export default function Chat() {
   }, [qnaList])
 
   const handleSubmitUserAnswer = (userAnswer: string) => () => {
-    if (MAX_QNA_LENGTH < index.current) {
-      return
-    }
+    const nextQuestion = questions[index.current].question
 
-    // 조건문 추가
-    if (index.current < MAX_QNA_LENGTH) {
+    if (index.current <= MAX_QNA_LENGTH) {
       setQnaList((prev: any) => [
         ...prev,
         userAnswer,
-        // index.current != MAX_QNA_LENGTH &&
-        questions[index.current].question
+        index.current != MAX_QNA_LENGTH + 1 && nextQuestion
       ])
       setUserAnswer('')
       index.current += 1
