@@ -24,7 +24,7 @@ type TMessageListItem = {
 const MAX_QNA_LENGTH = 5
 const NEXT_INDEX = 1
 const TOTAL = 10
-const CHAT_DELAY = 1000
+const CHAT_DELAY = 500
 
 export default function Chat() {
   const [userAnswer, setUserAnswer] = useState('')
