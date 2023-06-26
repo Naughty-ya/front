@@ -9,7 +9,6 @@ import {
   ChatHeader
 } from 'src/components/Chat'
 import profile from 'src/assets/img/profile.png'
-import spinnerIcon from 'src/assets/icons/spinner.svg'
 import { FetchClient } from 'src/api'
 import { useQuery } from 'src/hooks/use-query'
 import { useNavigate } from 'react-router-dom'
