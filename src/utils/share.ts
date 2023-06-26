@@ -20,7 +20,7 @@ export function shareKakaoLink() {
       title: '너 T야?',
       description: 'AI가 판별해주는 나의 T 성향!',
       imageUrl:
-        'https://github.com/Naughty-ya/front/blob/main/public/kakao-share.png',
+        'https://github.com/Naughty-ya/front/blob/main/public/temp-kakao-share.png',
       link: {
         webUrl: import.meta.env.VITE_SHARE_URL
       }
