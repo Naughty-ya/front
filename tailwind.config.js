@@ -91,6 +91,7 @@ export default {
         brand: {
           pink: '#FF52FF',
           darkpink: '#DB61FA',
+          deeppink: '#D156F0',
           blue: '#6387FF'
         }
       }

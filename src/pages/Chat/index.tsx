@@ -129,12 +129,12 @@ export default function Chat() {
 
   return (
     <div
-      className="bg-cover relative bg-center max-h-[1000px] h-full w-full max-w-[500px] flex flex-col"
+      className="bg-cover relative bg-center max-h-[1000px] h-full w-full max-w-[500px] flex flex-col overflow-hidden"
       style={{
         backgroundImage: `url(${bg})`
       }}
     >
-      <ChatHeader className="flex top-0 w-full items-center justify-between h-16 bg-black border-b-[1px] border-gray-600">
+      <ChatHeader className="flex top-0 w-full items-center justify-between h-16 bg-black border-b-[1px] border-gray-600 shadow-xl shadow-black z-10">
         <ChatHeader.BackButton
           className="flex flex-row justify-center w-16"
           onClick={() => {
@@ -157,7 +157,7 @@ export default function Chat() {
               <ChatMessage.Profile
                 src={profile}
                 nickname="지피T"
-                className="gap-2 mb-2"
+                className="gap-2 mb-2 font-semibold"
               />
             )}
             {timestamp > 1 && (
@@ -196,7 +196,7 @@ export default function Chat() {
                     <ChatMessage.Profile
                       src={profile}
                       nickname="지피T"
-                      className="gap-2 mb-2"
+                      className="gap-2 mb-2 font-semibold"
                     />
                   ) : null}
                   <ChatMessage.Bubble
@@ -219,7 +219,7 @@ export default function Chat() {
         <div ref={chatBoxRef} />
       </div>
 
-      <div className="w-full py-10 pt-4">
+      <div className="w-full py-10 pt-4 relative">
         {qnaList.length >= 10 ? (
           <div className="px-5">
             <ChatSubmitButton
@@ -235,6 +235,7 @@ export default function Chat() {
               e.preventDefault()
             }}
             id="chat-form"
+            className="relative"
           >
             <ChatChoice className="flex max-w-[500px] overflow-auto scrollbar-hide gap-3 mb-3.5 px-5">
               {questions.map((q, idx) => {
@@ -254,6 +255,8 @@ export default function Chat() {
                             text={q.answerT}
                             onClick={handleSubmitUserAnswer(q.answerT)}
                           />
+                          <div className="absolute right-0 top-0 h-14 w-10 bg-gradient-to-l from-black to-transparent"></div>
+                          <div className="absolute left-0 top-0 h-14 w-10 bg-gradient-to-r from-black to-transparent"></div>
                         </>
                       )}
                   </React.Fragment>
@@ -262,14 +265,14 @@ export default function Chat() {
             </ChatChoice>
             <div className="flex mx-5 h-[52px]">
               <ChatInput
-                className="text-white bg-gray-600 rounded-[4px] py-2 px-3.5 w-full mr-2"
+                className="text-white bg-gray-600 rounded-[4px] py-2 px-3.5 w-full mr-2 border-gray-600 border-2 focus:outline-none  focus:border-blue-500 box-border "
                 value={userAnswer}
                 maxLength={50}
                 onChange={handleChangeUserAnswer}
                 placeholder="이럴 때 나는? (50자 이내)"
               />
               <button
-                className="flex items-center justify-center w-14 shrink-0 bg-brand-blue rounded-[4px] disabled:opacity-50"
+                className="flex items-center justify-center w-14 shrink-0 bg-brand-blue rounded-[4px] disabled:bg-gray-400"
                 onClick={handleSubmitUserAnswer(userAnswer)}
                 disabled={!isDefaultChatFinished || !userAnswer}
               >
