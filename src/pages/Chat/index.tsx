@@ -264,7 +264,7 @@ export default function Chat() {
             </ChatChoice>
             <div className="flex mx-5 h-[52px]">
               <ChatInput
-                className="text-white bg-gray-600 rounded-[4px] py-2 px-3.5 w-full mr-2 border-gray-600 border-2 focus:outline-none  focus:border-blue-500 box-border "
+                className="text-white bg-gray-600 rounded-[4px] py-2 px-3.5 w-full mr-2 border-gray-600 border-2 focus:outline-none  focus:border-brand-blue box-border "
                 value={userAnswer}
                 maxLength={50}
                 onChange={handleChangeUserAnswer}

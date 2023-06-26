@@ -10,7 +10,7 @@ function ChatChoiceButton({ text, onClick, ...others }: IChatChoiceButton) {
     <button
       onClick={onClick}
       type="button"
-      className={`border px-4 py-2.5 rounded-full text-white border-gray-300 whitespace-nowrap hover:bg-gra active:bg-gra`}
+      className={`border px-4 py-2.5 rounded-full text-white border-gray-500 whitespace-nowrap hover:bg-gra active:bg-gra`}
       {...others}
     >
       {text}

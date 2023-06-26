@@ -5,6 +5,7 @@ import { Flex } from 'src/components/core/Flex'
 import youAreThinkingImage from 'src/assets/img/you-are-t.webp'
 import { GradientWrapper } from 'src/components/common/GradientWrapper'
 import { useNavigate } from 'react-router-dom'
+import SubmitButton from '../common/SubmitButton'
 
 export default function HomePage() {
   const [nickname, setNickName] = useState(getRandomName(nicknamedb))
@@ -27,8 +28,10 @@ export default function HomePage() {
         <div className="text-2xl font-semibold drop-shadow-1">
           AI가 판별해준다
         </div>
-        <div className="text-[72px] font-bold drop-shadow-1 font-dunggeunmo">
-          너T야?
+        <div className="text-[72px] font-bold drop-shadow-1 font-dunggeunmo flex items-center">
+          <span>너</span>
+          <span className="text-7xl font-pretendard">T</span>
+          <span>야?</span>
         </div>
       </Flex>
       <div className="w-full p-5 mb-10">
@@ -57,14 +60,10 @@ export default function HomePage() {
             onChange={handleNicknameChange}
             placeholder="최대 10자 입력"
             className="px-[0.875rem] py-3 w-full  h-13 bg-white text-black focus:outline-none rounded-none"
+            autoFocus
           />
         </Flex>
-        <button
-          className="rounded-[4px] mb-10 h-14 px-8 py-2 bg-gra text-white font-semibold text-lg w-full drop-shadow-1"
-          onClick={handleStart}
-        >
-          내 T력 테스트하기
-        </button>
+        <SubmitButton contents="내 T력 테스트하기" onClick={handleStart} />
       </form>
     </Flex>
   )
