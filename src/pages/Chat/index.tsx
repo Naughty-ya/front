@@ -39,13 +39,8 @@ export default function Chat() {
     navigate('/')
   }
 
-  const divRef = useRef<HTMLDivElement>(null)
-  const switchRef = useRef<HTMLDivElement>(null)
-
   const [timestamp, setTimestamp] = useState(0)
   const isDefaultChatFinished = useMemo(() => timestamp === 6, [timestamp])
-  const divHeight = divRef.current?.getBoundingClientRect().height
-  const switchHeight = switchRef.current?.getBoundingClientRect().height
 
   useEffect(() => {
     let time = setInterval(() => {
@@ -65,8 +60,6 @@ export default function Chat() {
   }
   const index = useRef(1)
   const chatBoxRef = useRef<HTMLDivElement>(null)
-
-  const portalContainer = document.getElementById('overlay')
 
   const scrollToBottom = () => {
     if (chatBoxRef.current) {
@@ -227,7 +220,7 @@ export default function Chat() {
         <div ref={chatBoxRef} />
       </div>
 
-      <div ref={divRef} className="relative w-full py-10 pt-4">
+      <div className="relative w-full py-10 pt-4">
         {qnaList.length >= 10 ? (
           <div className="px-5">
             <ChatSubmitButton
@@ -314,7 +307,6 @@ export default function Chat() {
       )}
       {!isMobile && isDefaultChatFinished && qnaList.length < 10 && (
         <div
-          ref={switchRef}
           onClick={e => {
             e.stopPropagation()
             setSelectType(!selectType)
