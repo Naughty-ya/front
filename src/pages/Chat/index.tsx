@@ -108,7 +108,7 @@ export default function Chat() {
     setLsLoading(true)
     try {
       const data = await new FetchClient().post(
-        'https://ethssfzmm3.execute-api.ap-northeast-2.amazonaws.com/default/naughty-ya',
+        'http://openai.urcurly.site/api/openai',
         {
           list: resultData
         }
