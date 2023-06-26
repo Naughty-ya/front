@@ -3,3 +3,4 @@ from = "/proxy/*"
 to = "http://openai.urcurly.site/:splat"
 status = 200
 force = true
+
