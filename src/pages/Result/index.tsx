@@ -20,7 +20,7 @@ type ResultData = {
 export default function Result() {
   const data: ResultData = useLocation().state
 
-  const isThinking = data?.percent ?? 0 > 50
+  const isThinking = (data?.percent ?? 0) > 50
 
   return (
     <Layout>
