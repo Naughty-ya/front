@@ -57,7 +57,7 @@ export default function Result() {
           {data?.message ?? '알 수 없는 오류가 발생했습니다.'}
         </div>
         <SubmitButton
-          contents="내 T력 테스트하기"
+          contents="다시 테스트하기"
           onClick={() => navigate('/')}
         />
         <ShareButtons />
