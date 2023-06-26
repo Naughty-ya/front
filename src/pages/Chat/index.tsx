@@ -9,11 +9,13 @@ import {
   ChatHeader
 } from 'src/components/Chat'
 import profile from 'src/assets/img/profile.png'
+
 import { FetchClient } from 'src/api'
 import { useQuery } from 'src/hooks/use-query'
 import { useNavigate } from 'react-router-dom'
 import bg from 'src/assets/img/chat-bg.webp'
 import { Icon } from 'src/components/core/Icon'
+import { isMobile } from 'react-device-detect'
 
 type TMessageListItem = {
   question: string
@@ -29,6 +31,7 @@ export default function Chat() {
   const [userAnswer, setUserAnswer] = useState('')
   const [qnaList, setQnaList] = useState([questions[0].question])
   const [isLoading, setLsLoading] = useState(false)
+  const [selectType, setSelectType] = useState(true)
   const nickname = useQuery().get('nickname')
   const navigate = useNavigate()
 
@@ -36,8 +39,13 @@ export default function Chat() {
     navigate('/')
   }
 
+  const divRef = useRef<HTMLDivElement>(null)
+  const switchRef = useRef<HTMLDivElement>(null)
+
   const [timestamp, setTimestamp] = useState(0)
   const isDefaultChatFinished = useMemo(() => timestamp === 6, [timestamp])
+  const divHeight = divRef.current?.getBoundingClientRect().height
+  const switchHeight = switchRef.current?.getBoundingClientRect().height
 
   useEffect(() => {
     let time = setInterval(() => {
@@ -52,12 +60,13 @@ export default function Chat() {
   // navigate('/', { list: '리스트' })
 
   /*  <Link to="new-path" state={{ some: "value" }} /> */
-
   const handleChangeUserAnswer = (e: ChangeEvent<HTMLInputElement>) => {
     setUserAnswer(e.target.value)
   }
   const index = useRef(1)
   const chatBoxRef = useRef<HTMLDivElement>(null)
+
+  const portalContainer = document.getElementById('overlay')
 
   const scrollToBottom = () => {
     if (chatBoxRef.current) {
@@ -218,7 +227,7 @@ export default function Chat() {
         <div ref={chatBoxRef} />
       </div>
 
-      <div className="relative w-full py-10 pt-4">
+      <div ref={divRef} className="relative w-full py-10 pt-4">
         {qnaList.length >= 10 ? (
           <div className="px-5">
             <ChatSubmitButton
@@ -236,7 +245,7 @@ export default function Chat() {
             id="chat-form"
             className="relative"
           >
-            <ChatChoice className="flex max-w-[500px] overflow-auto scrollbar-hide gap-3 mb-3.5 px-5">
+            <ChatChoice className="flex max-w-[500px] overflow-auto scrollbar-hide gap-3 mb-3.5 px-5 relative">
               {questions.map((q, idx) => {
                 if (MAX_QNA_LENGTH < index.current && idx === MAX_QNA_LENGTH)
                   return null
@@ -246,14 +255,30 @@ export default function Chat() {
                     {Math.round(qnaList.length / 2) === idx + NEXT_INDEX &&
                       isDefaultChatFinished && (
                         <>
-                          <ChatChoice.Button
-                            text={q.answerF}
-                            onClick={handleSubmitUserAnswer(q.answerF)}
-                          />
-                          <ChatChoice.Button
-                            text={q.answerT}
-                            onClick={handleSubmitUserAnswer(q.answerT)}
-                          />
+                          {selectType ? (
+                            <>
+                              <ChatChoice.Button
+                                text={q.answerF}
+                                onClick={handleSubmitUserAnswer(q.answerF)}
+                              />
+                              <ChatChoice.Button
+                                text={q.answerT}
+                                onClick={handleSubmitUserAnswer(q.answerT)}
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <ChatChoice.Button
+                                text={q.answerT}
+                                onClick={handleSubmitUserAnswer(q.answerT)}
+                              />
+                              <ChatChoice.Button
+                                text={q.answerF}
+                                onClick={handleSubmitUserAnswer(q.answerF)}
+                              />
+                            </>
+                          )}
+
                           <div className="absolute top-0 right-0 w-10 h-14 bg-gradient-to-l from-black to-transparent"></div>
                           <div className="absolute top-0 left-0 w-10 h-14 bg-gradient-to-r from-black to-transparent"></div>
                         </>
@@ -286,6 +311,24 @@ export default function Chat() {
           <Icon name="spinner" className="animate-spin" />
           <p className="text-2xl font-dunggeunmo">{`잠시 기다려줘 ${nickname}`}</p>
         </ChatLoading>
+      )}
+      {!isMobile && isDefaultChatFinished && qnaList.length < 10 && (
+        <div
+          ref={switchRef}
+          onClick={e => {
+            e.stopPropagation()
+            setSelectType(!selectType)
+          }}
+          className="animate-bounce"
+          style={{
+            position: 'absolute',
+            cursor: 'pointer',
+            left: '20px',
+            bottom: '160px'
+          }}
+        >
+          스위치
+        </div>
       )}
     </div>
   )
