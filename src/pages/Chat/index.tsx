@@ -103,7 +103,7 @@ export default function Chat() {
   2. 로딩 UI가 표시된다. 2초동안.
   3. response값을 가지고 result 페이지로 라우팅한다.
 */
-  //https://gj3qocj6m6xlsq5fjkavutyhr40mdeep.lambda-url.ap-northeast-2.on.aws/
+
   const handleSubmitChatResult = async (resultData: TMessageListItem[]) => {
     setLsLoading(true)
     try {
@@ -219,7 +219,7 @@ export default function Chat() {
         <div ref={chatBoxRef} />
       </div>
 
-      <div className="w-full py-10 pt-4 relative">
+      <div className="relative w-full py-10 pt-4">
         {qnaList.length >= 10 ? (
           <div className="px-5">
             <ChatSubmitButton
@@ -255,8 +255,8 @@ export default function Chat() {
                             text={q.answerT}
                             onClick={handleSubmitUserAnswer(q.answerT)}
                           />
-                          <div className="absolute right-0 top-0 h-14 w-10 bg-gradient-to-l from-black to-transparent"></div>
-                          <div className="absolute left-0 top-0 h-14 w-10 bg-gradient-to-r from-black to-transparent"></div>
+                          <div className="absolute top-0 right-0 w-10 h-14 bg-gradient-to-l from-black to-transparent"></div>
+                          <div className="absolute top-0 left-0 w-10 h-14 bg-gradient-to-r from-black to-transparent"></div>
                         </>
                       )}
                   </React.Fragment>
