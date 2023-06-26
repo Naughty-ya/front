@@ -1,6 +1,9 @@
+import { toast } from 'react-toastify'
+
 export async function shareClipboard(text: string) {
   try {
     await navigator.clipboard.writeText(text)
+    toast('복사되었습니다!')
   } catch (err) {
     console.error('Failed to copy: ', err)
   }
@@ -29,8 +32,8 @@ export function shareKakaoLink() {
       {
         title: '테스트하러 가기',
         link: {
-          mobileWebUrl: 'https://developers.kakao.com',
-          webUrl: 'https://developers.kakao.com'
+          mobileWebUrl: import.meta.env.VITE_SHARE_URL,
+          webUrl: import.meta.env.VITE_SHARE_URL
         }
       }
     ]
