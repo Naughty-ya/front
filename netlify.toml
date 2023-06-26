@@ -1,6 +1,6 @@
 [[redirects]]
-from = "/proxy/*"
-to = "http://openai.urcurly.site/:splat"
+from = "/*"
+to = "index.html"
 status = 200
-force = true
+
 
