@@ -78,20 +78,27 @@ export default function Chat() {
     if (MAX_QNA_LENGTH < index.current) {
       return
     }
-    setQnaList([...qnaList, userAnswer, questions[index.current].question])
-    setUserAnswer('')
-    index.current += 1
 
-    return
+    // 조건문 추가
+    if (index.current < MAX_QNA_LENGTH) {
+      setQnaList((prev: any) => [
+        ...prev,
+        userAnswer,
+        // index.current != MAX_QNA_LENGTH &&
+        questions[index.current].question
+      ])
+      setUserAnswer('')
+      index.current += 1
+    } else return
   }
 
   const resultData = useMemo(() => {
     const list: TMessageListItem[] = []
 
-    for (let i = 0; i < qnaList.length; i += NEXT_INDEX) {
+    for (let i = 0; i < qnaList.length; i += 2) {
       const obj = {
         question: qnaList[i],
-        answer: qnaList[i + NEXT_INDEX]
+        answer: qnaList[i + 1]
       }
       list.push(obj)
     }
@@ -128,6 +135,9 @@ export default function Chat() {
     index.current -= 1
   }
 
+  console.log('resultData::', resultData)
+  console.log('qnaList::', qnaList)
+  console.log('index current', index.current)
   return (
     <div
       className="bg-cover relative bg-center max-h-[1000px] h-full w-full max-w-[500px] flex flex-col overflow-hidden"
@@ -245,6 +255,8 @@ export default function Chat() {
 
                 return (
                   <React.Fragment key={idx}>
+                    {/* {index.current < MAX_QNA_LENGTH + 1 &&
+                      } */}
                     {Math.round(qnaList.length / 2) === idx + NEXT_INDEX &&
                       isDefaultChatFinished && (
                         <>

@@ -9,9 +9,11 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --cache --write --config ./.prettierrc.json ./src/**/*.{ts,tsx}",
     "postinstall": "husky install",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vite --host 0.0.0.0 --port 5137"
   },
   "dependencies": {
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
     "react": "^18.2.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
