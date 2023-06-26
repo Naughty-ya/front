@@ -131,9 +131,6 @@ export default function Chat() {
     index.current -= 1
   }
 
-  console.log('resultData::', resultData)
-  console.log('qnaList::', qnaList)
-  console.log('index current', index.current)
   return (
     <div
       className="bg-cover relative bg-center max-h-[1000px] h-full w-full max-w-[500px] flex flex-col overflow-hidden"
