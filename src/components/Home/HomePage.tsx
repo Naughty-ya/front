@@ -28,8 +28,10 @@ export default function HomePage() {
         <div className="text-2xl font-semibold drop-shadow-1">
           AI가 판별해준다
         </div>
-        <div className="text-[72px] font-bold drop-shadow-1 font-dunggeunmo">
-          너T야?
+        <div className="text-[72px] font-bold drop-shadow-1 font-dunggeunmo flex items-center">
+          <span>너</span>
+          <span className="text-7xl font-pretendard">T</span>
+          <span>야?</span>
         </div>
       </Flex>
       <div className="w-full p-5 mb-10">
