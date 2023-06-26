@@ -108,7 +108,7 @@ export default function Chat() {
     setLsLoading(true)
     try {
       const data = await new FetchClient().post(
-        `${process.env.BASE_URL}/api/openai`,
+        `${import.meta.env.BASE_URL}/api/openai`,
         {
           list: resultData
         }
