@@ -8,7 +8,8 @@ import youArdThinkingImage from 'src/assets/img/you-are-t.webp'
 
 import { UserPercent } from 'src/components/Result/UserPercent'
 import { Layout } from 'src/components/layout/Layout'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import SubmitButton from 'src/components/common/SubmitButton'
 
 type ResultData = {
   percent?: number
@@ -19,6 +20,7 @@ type ResultData = {
 
 export default function Result() {
   const data: ResultData = useLocation().state
+  const navigate = useNavigate()
 
   const isThinking = data?.percent ?? 0 > 50
 
@@ -54,6 +56,10 @@ export default function Result() {
         <div className="my-4 bg-[#F5F5F5] text-gray-800 w-full px-5 py-6 font-dunggeunmo mb-10 rounded-[4px] tracking-tight">
           {data?.message ?? '알 수 없는 오류가 발생했습니다.'}
         </div>
+        <SubmitButton
+          contents="내 T력 테스트하기"
+          onClick={() => navigate('/')}
+        />
         <ShareButtons />
       </Flex>
     </Layout>

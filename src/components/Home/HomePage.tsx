@@ -5,6 +5,7 @@ import { Flex } from 'src/components/core/Flex'
 import youAreThinkingImage from 'src/assets/img/you-are-t.webp'
 import { GradientWrapper } from 'src/components/common/GradientWrapper'
 import { useNavigate } from 'react-router-dom'
+import SubmitButton from '../common/SubmitButton'
 
 export default function HomePage() {
   const [nickname, setNickName] = useState(getRandomName(nicknamedb))
@@ -59,12 +60,7 @@ export default function HomePage() {
             className="px-[0.875rem] py-3 w-full  h-13 bg-white text-black focus:outline-none rounded-none"
           />
         </Flex>
-        <button
-          className="rounded-[4px] mb-10 h-14 px-8 py-2 bg-gra text-white font-semibold text-lg w-full drop-shadow-1"
-          onClick={handleStart}
-        >
-          내 T력 테스트하기
-        </button>
+        <SubmitButton contents="내 T력 테스트하기" onClick={handleStart} />
       </form>
     </Flex>
   )
