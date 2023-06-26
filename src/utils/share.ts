@@ -20,21 +20,14 @@ export function shareKakaoLink() {
       title: '너 T야?',
       description: 'AI가 판별해주는 나의 T 성향!',
       imageUrl:
-        'http://k.kakaocdn.net/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
+        'https://github.com/Naughty-ya/front/blob/main/public/kakao-share.png',
       link: {
         webUrl: import.meta.env.VITE_SHARE_URL
       }
     },
     buttons: [
       {
-        title: '웹으로 보기',
-        link: {
-          mobileWebUrl: 'https://developers.kakao.com',
-          webUrl: 'https://developers.kakao.com'
-        }
-      },
-      {
-        title: '앱으로 보기',
+        title: '테스트하러 가기',
         link: {
           mobileWebUrl: 'https://developers.kakao.com',
           webUrl: 'https://developers.kakao.com'
