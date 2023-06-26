@@ -284,7 +284,7 @@ export default function Chat() {
       </div>
       {isLoading && (
         <ChatLoading className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-black pointer-evente-none opacity-80">
-          <img src={spinnerIcon} alt="로딩 중" className="animate-spin" />
+          <Icon name="spinner" className="animate-spin" />
           <p className="text-2xl font-dunggeunmo">{`잠시 기다려줘 ${nickname}`}</p>
         </ChatLoading>
       )}

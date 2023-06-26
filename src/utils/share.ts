@@ -21,7 +21,7 @@ export function shareKakaoLink() {
     objectType: 'feed',
     content: {
       title: '너 T야?',
-      description: 'AI가 판별해주는 나의 T 성향!',
+      description: 'AI가 판별해주는 나의 T 력',
       imageUrl:
         'https://github.com/Naughty-ya/front/blob/main/public/temp-kakao-share.png?raw=true',
       link: {
