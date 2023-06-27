@@ -65,9 +65,6 @@ export default function Chat() {
   // input 포커싱이벤트
   const handleFocusInput = () => {
     setFocus(true)
-    setTimeout(() => {
-      scrollToBottom()
-    }, 500)
   }
 
   // 포커싱 아웃 이벤트
