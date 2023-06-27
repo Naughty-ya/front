@@ -303,8 +303,12 @@ export default function Chat() {
                   </div>
                 )
               })}
-              <div className="absolute top-0 right-0 w-8 h-14 bg-gradient-to-l from-black to-transparent"></div>
-              <div className="absolute top-0 left-0 w-8 h-14 bg-gradient-to-r from-black to-transparent"></div>
+              {focus && (
+                <>
+                  <div className="absolute top-0 right-0 w-8 h-14 bg-gradient-to-l from-black to-transparent"></div>
+                  <div className="absolute top-0 left-0 w-8 h-14 bg-gradient-to-r from-black to-transparent"></div>
+                </>
+              )}
             </ChatChoice>
             <div className="flex mx-5 h-[52px]">
               <ChatInput
