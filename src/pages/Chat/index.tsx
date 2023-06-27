@@ -63,11 +63,14 @@ export default function Chat() {
   const chatBoxRef = useRef<HTMLDivElement>(null)
 
   // input 포커싱이벤트
-
   const handleFocusInput = () => {
     setFocus(true)
+    setTimeout(() => {
+      scrollToBottom()
+    }, 500)
   }
 
+  // 포커싱 아웃 이벤트
   const hanldeBlurInput = () => {
     setFocus(false)
   }
