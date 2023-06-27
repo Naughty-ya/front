@@ -256,55 +256,55 @@ export default function Chat() {
             id="chat-form"
             className="relative"
           >
-            <ChatChoice className="flex max-w-[500px] overflow-auto scrollbar-hide gap-3 mb-3.5 px-5 relative">
+            <ChatChoice>
               {questions.map((q, idx) => {
                 if (MAX_QNA_LENGTH < index.current && idx === MAX_QNA_LENGTH)
                   return null
 
+                if (
+                  Math.round(qnaList.length / 2) !== idx + NEXT_INDEX ||
+                  !isDefaultChatFinished
+                )
+                  return null
+
                 return (
-                  <React.Fragment key={idx}>
+                  <div className="flex max-w-[500px] scrollbar-hide overflow-x-auto gap-3 mb-3.5 px-5">
                     {focus && (
                       <>
-                        {Math.round(qnaList.length / 2) === idx + NEXT_INDEX &&
-                          isDefaultChatFinished && (
-                            <>
-                              {selectType ? (
-                                <>
-                                  <ChatChoice.Button
-                                    text={q.answerF}
-                                    onClick={handleSubmitUserAnswer(q.answerF)}
-                                    onFocus={handleFocusInput}
-                                  />
-                                  <ChatChoice.Button
-                                    text={q.answerT}
-                                    onClick={handleSubmitUserAnswer(q.answerT)}
-                                    onFocus={handleFocusInput}
-                                  />
-                                </>
-                              ) : (
-                                <>
-                                  <ChatChoice.Button
-                                    text={q.answerT}
-                                    onClick={handleSubmitUserAnswer(q.answerT)}
-                                    onFocus={handleFocusInput}
-                                  />
-                                  <ChatChoice.Button
-                                    text={q.answerF}
-                                    onClick={handleSubmitUserAnswer(q.answerF)}
-                                    onFocus={handleFocusInput}
-                                  />
-                                </>
-                              )}
-
-                              <div className="absolute top-0 right-0 w-10 h-14 bg-gradient-to-l from-black to-transparent"></div>
-                              <div className="absolute top-0 left-0 w-10 h-14 bg-gradient-to-r from-black to-transparent"></div>
-                            </>
-                          )}
+                        {selectType ? (
+                          <>
+                            <ChatChoice.Button
+                              text={q.answerF}
+                              onClick={handleSubmitUserAnswer(q.answerF)}
+                              onFocus={handleFocusInput}
+                            />
+                            <ChatChoice.Button
+                              text={q.answerT}
+                              onClick={handleSubmitUserAnswer(q.answerT)}
+                              onFocus={handleFocusInput}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <ChatChoice.Button
+                              text={q.answerT}
+                              onClick={handleSubmitUserAnswer(q.answerT)}
+                              onFocus={handleFocusInput}
+                            />
+                            <ChatChoice.Button
+                              text={q.answerF}
+                              onClick={handleSubmitUserAnswer(q.answerF)}
+                              onFocus={handleFocusInput}
+                            />
+                          </>
+                        )}
                       </>
                     )}
-                  </React.Fragment>
+                  </div>
                 )
               })}
+              <div className="absolute top-0 right-0 w-8 h-14 bg-gradient-to-l from-black to-transparent"></div>
+              <div className="absolute top-0 left-0 w-8 h-14 bg-gradient-to-r from-black to-transparent"></div>
             </ChatChoice>
             <div className="flex mx-5 h-[52px]">
               <ChatInput
