@@ -32,6 +32,7 @@ export default function Chat() {
   const [qnaList, setQnaList] = useState([questions[0].question])
   const [isLoading, setLsLoading] = useState(false)
   const [selectType, setSelectType] = useState(true)
+  const [focus, setFocus] = useState(false)
   const nickname = useQuery().get('nickname')
   const navigate = useNavigate()
 
@@ -60,6 +61,16 @@ export default function Chat() {
   }
   const index = useRef(1)
   const chatBoxRef = useRef<HTMLDivElement>(null)
+
+  // input 포커싱이벤트
+
+  const handleFocusInput = () => {
+    setFocus(true)
+  }
+
+  const hanldeBlurInput = () => {
+    setFocus(false)
+  }
 
   const scrollToBottom = () => {
     if (chatBoxRef.current) {
@@ -153,7 +164,8 @@ export default function Chat() {
 
       <div
         id="chat-message-wrapper"
-        className="flex-1 p-5 py-10 overflow-auto text-gray-800 scrollbar-hide"
+        className="flex-1 p-5 pt-10 overflow-auto text-gray-800 scrollbar-hide"
+        onClick={hanldeBlurInput}
       >
         <ChatMessage>
           <div id="chat-message-default-system" className="flex flex-col">
@@ -248,39 +260,45 @@ export default function Chat() {
 
                 return (
                   <React.Fragment key={idx}>
-                    {/* {index.current < MAX_QNA_LENGTH + 1 &&
-                      } */}
-                    {Math.round(qnaList.length / 2) === idx + NEXT_INDEX &&
-                      isDefaultChatFinished && (
-                        <>
-                          {selectType ? (
+                    {focus && (
+                      <>
+                        {Math.round(qnaList.length / 2) === idx + NEXT_INDEX &&
+                          isDefaultChatFinished && (
                             <>
-                              <ChatChoice.Button
-                                text={q.answerF}
-                                onClick={handleSubmitUserAnswer(q.answerF)}
-                              />
-                              <ChatChoice.Button
-                                text={q.answerT}
-                                onClick={handleSubmitUserAnswer(q.answerT)}
-                              />
-                            </>
-                          ) : (
-                            <>
-                              <ChatChoice.Button
-                                text={q.answerT}
-                                onClick={handleSubmitUserAnswer(q.answerT)}
-                              />
-                              <ChatChoice.Button
-                                text={q.answerF}
-                                onClick={handleSubmitUserAnswer(q.answerF)}
-                              />
+                              {selectType ? (
+                                <>
+                                  <ChatChoice.Button
+                                    text={q.answerF}
+                                    onClick={handleSubmitUserAnswer(q.answerF)}
+                                    onFocus={handleFocusInput}
+                                  />
+                                  <ChatChoice.Button
+                                    text={q.answerT}
+                                    onClick={handleSubmitUserAnswer(q.answerT)}
+                                    onFocus={handleFocusInput}
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <ChatChoice.Button
+                                    text={q.answerT}
+                                    onClick={handleSubmitUserAnswer(q.answerT)}
+                                    onFocus={handleFocusInput}
+                                  />
+                                  <ChatChoice.Button
+                                    text={q.answerF}
+                                    onClick={handleSubmitUserAnswer(q.answerF)}
+                                    onFocus={handleFocusInput}
+                                  />
+                                </>
+                              )}
+
+                              <div className="absolute top-0 right-0 w-10 h-14 bg-gradient-to-l from-black to-transparent"></div>
+                              <div className="absolute top-0 left-0 w-10 h-14 bg-gradient-to-r from-black to-transparent"></div>
                             </>
                           )}
-
-                          <div className="absolute top-0 right-0 w-10 h-14 bg-gradient-to-l from-black to-transparent"></div>
-                          <div className="absolute top-0 left-0 w-10 h-14 bg-gradient-to-r from-black to-transparent"></div>
-                        </>
-                      )}
+                      </>
+                    )}
                   </React.Fragment>
                 )
               })}
@@ -292,6 +310,7 @@ export default function Chat() {
                 maxLength={50}
                 onChange={handleChangeUserAnswer}
                 placeholder="이럴 때 나는? (50자 이내)"
+                onFocus={handleFocusInput}
               />
               <button
                 className="flex items-center justify-center w-14 shrink-0 bg-brand-blue rounded-[4px] disabled:bg-gray-400"
@@ -310,7 +329,7 @@ export default function Chat() {
           <p className="text-2xl font-dunggeunmo">{`잠시 기다려줘 ${nickname}`}</p>
         </ChatLoading>
       )}
-      {!isMobile && isDefaultChatFinished && qnaList.length < 10 && (
+      {focus && !isMobile && isDefaultChatFinished && qnaList.length < 10 && (
         <div
           onClick={e => {
             e.stopPropagation()
