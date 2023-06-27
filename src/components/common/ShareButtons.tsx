@@ -3,6 +3,9 @@ import { IconButton } from 'src/components/core/IconButton'
 import { shareClipboard, shareKakaoLink, shareTwitter } from 'src/utils/share'
 
 export function ShareButtons() {
+  let url = window.location.href.split('/')
+  url.pop()
+  let newUrl = url.join('/')
   return (
     <Flex direction="row" className="gap-3" align="center">
       <IconButton
@@ -24,7 +27,7 @@ export function ShareButtons() {
         iconFill="none"
         iconSize={22}
         className="bg-blue-500 p-3 rounded-full drop-shadow-1 hover:bg-blue-600 active:bg-blue-700 transition-all"
-        onClick={() => shareClipboard(window.location.href)}
+        onClick={() => shareClipboard(newUrl)}
       />
     </Flex>
   )
