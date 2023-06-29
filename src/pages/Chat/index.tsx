@@ -44,7 +44,7 @@ export default function Chat() {
     setUserAnswer(e.target.value)
   }
 
-  const isDone = qnaIndex.current + 1 === questions.length
+  const isDone = qnaIndex.current === questions.length
   const isLastUserMessage = messages[messages.length - 1]?.role === 'user'
   const isLastSystemMessage = messages[messages.length - 1]?.role === 'system'
   const isFirstSystemContext = (index: number) => {

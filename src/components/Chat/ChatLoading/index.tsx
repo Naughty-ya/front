@@ -13,7 +13,7 @@ export default function ChatLoading({ children, ...others }: IChatLoading) {
       {...others}
     >
       <Icon name="spinner" className="animate-spin" stroke="none" />
-      <p className="text-2xl font-dunggeunmo">{children}</p>
+      {children}
     </div>
   )
 }
