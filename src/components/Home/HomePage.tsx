@@ -60,7 +60,6 @@ export default function HomePage() {
             onChange={handleNicknameChange}
             placeholder="최대 10자 입력"
             className="px-[0.875rem] py-3 w-full  h-13 bg-white text-black focus:outline-none rounded-none"
-            autoFocus
           />
         </Flex>
         <SubmitButton contents="내 T력 테스트하기" onClick={handleStart} />
