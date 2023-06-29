@@ -20,10 +20,12 @@ interface IUndoButton extends HTMLAttributes<HTMLButtonElement> {}
 
 function UndoButton({ ...others }: IUndoButton) {
   return (
-    <button type="button" {...others}>
-      <Icon name="refresh" size={18} fill="none" />
-      <span>다시 보내기</span>
-    </button>
+    <div className="w-full flex items-center justify-center">
+      <button type="button" {...others}>
+        <Icon name="refresh" size={18} fill="none" />
+        <span>다시 보내기</span>
+      </button>
+    </div>
   )
 }
 
