@@ -24,7 +24,6 @@ export default function Chat() {
   const nickname = useQuery().get('nickname')
   const defaultMessages = generateDefaultChatMessages(nickname ?? '')
 
-  const messageIndex = useRef(0)
   const qnaIndex = useRef(0)
   const { scrollRef, scrollIntoView } = useScrollTo<HTMLDivElement>()
 
@@ -57,18 +56,11 @@ export default function Chat() {
   const handleUserAnswerSubmit = (userAnswer: string) => {
     pushAnswerMessage(userAnswer)
     setUserAnswer('')
-    messageIndex.current += 1
     qnaIndex.current += 1
   }
 
   const handleAnswerCancel = () => {
-    if (!isDone) {
-      popMessages(2)
-      messageIndex.current -= 2
-    } else {
-      popMessages(1)
-      messageIndex.current -= 1
-    }
+    isDone ? popMessages(1) : popMessages(2)
     qnaIndex.current -= 1
   }
 
@@ -93,11 +85,10 @@ export default function Chat() {
 
   useInterval({
     callback: () => {
-      pushMessage(defaultMessages[messageIndex.current])
-      messageIndex.current += 1
+      pushMessage(defaultMessages[messages.length])
     },
     delay: 500,
-    condition: messageIndex.current < defaultMessages.length
+    condition: messages.length < defaultMessages.length
   })
 
   useEffect(() => {
@@ -108,7 +99,6 @@ export default function Chat() {
     if (isLastUserMessage && !isDone) {
       const timeoutID = setTimeout(() => {
         pushQuestionMessage(questions[qnaIndex.current].question)
-        messageIndex.current += 1
       }, 500)
 
       return () => {
