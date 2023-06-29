@@ -62,8 +62,13 @@ export default function Chat() {
   }
 
   const handleAnswerCancel = () => {
-    popMessages(2)
-    messageIndex.current -= 2
+    if (!isDone) {
+      popMessages(2)
+      messageIndex.current -= 2
+    } else {
+      popMessages(1)
+      messageIndex.current -= 1
+    }
     qnaIndex.current -= 1
   }
 
