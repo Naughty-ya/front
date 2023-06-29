@@ -1,95 +1,81 @@
-import { useRef, useState, useMemo, useEffect, Fragment } from 'react'
-import questions from 'src/assets/data/chat.json'
-import {
-  ChatMessage,
-  ChatInput,
-  ChatChoice,
-  ChatSubmitButton,
-  ChatLoading,
-  ChatHeader
-} from 'src/components/Chat'
-import profile from 'src/assets/img/profile.png'
-
-import { FetchClient } from 'src/api'
-import { useQuery } from 'src/hooks/use-query'
-import { useNavigate } from 'react-router-dom'
 import bg from 'src/assets/img/chat-bg.webp'
-import { Icon } from 'src/components/core/Icon'
-import { isMobile } from 'react-device-detect'
+import profile from 'src/assets/img/profile.png'
+import questions from 'src/assets/data/chat.json'
+
+import { useRef, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { useBoolean, useInterval, useQuery, useScrollTo } from 'src/hooks'
+import { useMessages } from 'src/hooks/use-messages'
+import { FetchClient } from 'src/api'
+import { generateDefaultChatMessages } from 'src/pages/Chat/chat-messages'
 
 import { BooleanCase } from 'src/components/common/BooleanCase'
-import { useBoolean, useInterval, useScrollTo } from 'src/hooks'
-
-type TMessageListItem = {
-  question: string
-  answer: string
-}
-
-const MAX_QNA_LENGTH = 5
-const NEXT_INDEX = 1
-const TOTAL = 10
+import {
+  ChatMessage,
+  ChatSubmitButton,
+  ChatLoading,
+  ChatHeader,
+  ChatForm
+} from 'src/components/Chat'
 
 export default function Chat() {
   const navigate = useNavigate()
   const nickname = useQuery().get('nickname')
+  const defaultMessages = generateDefaultChatMessages(nickname ?? '')
 
-  const index = useRef(1)
+  const messageIndex = useRef(0)
+  const qnaIndex = useRef(0)
   const { scrollRef, scrollIntoView } = useScrollTo<HTMLDivElement>()
 
-  const [focus, setFocus, setBlur] = useBoolean(false)
   const [isLoading, setLoadingTrue, setLoadingFalse] = useBoolean(false)
-  const [selectType, , , selectTypeToggle] = useBoolean(true)
-
   const [userAnswer, setUserAnswer] = useState('')
-  const [qnaList, setQnaList] = useState([questions[0].question])
-  const [timestamp, setTimestamp] = useState(0)
+
+  const {
+    messages,
+    pushMessage,
+    pushAnswerMessage,
+    pushQuestionMessage,
+    popMessages,
+    getQnAList
+  } = useMessages()
 
   const handleUserAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserAnswer(e.target.value)
   }
 
-  const isDefaultChatFinished = useMemo(() => timestamp === 6, [timestamp])
-  const isDone = useMemo(() => qnaList.length === TOTAL, [qnaList])
-
-  const handleUserAnswerSubmit = (userAnswer: string) => {
-    const nextQuestion = questions[index.current].question
-
-    setQnaList(prev => {
-      const newList = [...prev, userAnswer]
-
-      if (index.current !== MAX_QNA_LENGTH) {
-        newList.push(nextQuestion)
-      }
-
-      return newList
-    })
-
-    setUserAnswer('')
-    index.current += 1
+  const isDone = qnaIndex.current + 1 === questions.length
+  const isLastUserMessage = messages[messages.length - 1]?.role === 'user'
+  const isLastSystemMessage = messages[messages.length - 1]?.role === 'system'
+  const isFirstSystemContext = (index: number) => {
+    return (
+      index === 0 ||
+      (messages[index - 1].role === 'user' && messages[index].role === 'system')
+    )
   }
 
-  const resultData = useMemo(() => {
-    const list: TMessageListItem[] = []
+  const handleUserAnswerSubmit = (userAnswer: string) => {
+    pushAnswerMessage(userAnswer)
+    setUserAnswer('')
+    messageIndex.current += 1
+    qnaIndex.current += 1
+  }
 
-    for (let i = 0; i < qnaList.length; i += 2) {
-      const obj = {
-        question: qnaList[i],
-        answer: qnaList[i + 1]
-      }
-      list.push(obj)
-    }
-    list.pop()
-    return list
-  }, [qnaList])
+  const handleAnswerCancel = () => {
+    popMessages(2)
+    messageIndex.current -= 2
+    qnaIndex.current -= 1
+  }
 
-  const handleChatResultSubmit = async (resultData: TMessageListItem[]) => {
-    setLoadingTrue()
+  const handleChatResultSubmit = async () => {
+    const qnaList = getQnAList()
+
     try {
+      setLoadingTrue()
       const data = await new FetchClient().post(
         `${import.meta.env.VITE_BASE_URL}/api/openai`,
         {
-          list: resultData
+          list: qnaList
         }
       )
       navigate('/result', { state: data })
@@ -100,22 +86,31 @@ export default function Chat() {
     }
   }
 
-  const backAnswerHandler = () => {
-    setQnaList([...qnaList].slice(0, qnaList.length - 2))
-    index.current -= 1
-  }
-
   useInterval({
     callback: () => {
-      setTimestamp(pre => pre + 1)
+      pushMessage(defaultMessages[messageIndex.current])
+      messageIndex.current += 1
     },
     delay: 500,
-    condition: timestamp < 6
+    condition: messageIndex.current < defaultMessages.length
   })
 
   useEffect(() => {
     scrollIntoView()
-  }, [qnaList])
+  }, [messages])
+
+  useEffect(() => {
+    if (isLastUserMessage && !isDone) {
+      const timeoutID = setTimeout(() => {
+        pushQuestionMessage(questions[qnaIndex.current].question)
+        messageIndex.current += 1
+      }, 500)
+
+      return () => {
+        clearTimeout(timeoutID)
+      }
+    }
+  }, [messages])
 
   return (
     <div
@@ -142,188 +137,73 @@ export default function Chat() {
         className="flex-1 p-5 pt-10 overflow-auto text-gray-800 scrollbar-hide"
       >
         <ChatMessage>
-          <div id="chat-message-default-system" className="flex flex-col">
-            {timestamp > 1 && (
-              <>
-                <ChatMessage.Profile
-                  src={profile}
-                  nickname="지피T"
-                  className="gap-2 mb-2 font-semibold"
-                />
-                <ChatMessage.Bubble type="system">
-                  안녕 {nickname}.
-                </ChatMessage.Bubble>
-              </>
-            )}
-            {timestamp > 2 && (
-              <ChatMessage.Bubble type="system">
-                지금부터 내가 5가지 질문을 할 거야
-              </ChatMessage.Bubble>
-            )}
-            {timestamp > 3 && (
-              <ChatMessage.Bubble type="system">
-                솔직하게 대답해줘
-              </ChatMessage.Bubble>
-            )}
-          </div>
-          <div
-            id="chat-message-default-user"
-            className="flex flex-col items-end"
-          >
-            {timestamp > 4 && (
-              <ChatMessage.Bubble type="user">응</ChatMessage.Bubble>
-            )}
-          </div>
-        </ChatMessage>
-        <ChatMessage>
-          <div className="flex flex-col">
-            {qnaList.map((q, idx) => {
-              if (MAX_QNA_LENGTH < index.current && idx === TOTAL) return null
-              if (!isDefaultChatFinished) return null
-              return (
-                <Fragment key={idx}>
-                  {idx % 2 === 0 ? (
+          {messages.map((message, index) => (
+            <BooleanCase
+              key={message.id}
+              value={message.role === 'system'}
+              trueCase={
+                <div id="chat-message-default-system" className="flex flex-col">
+                  {isFirstSystemContext(index) ? (
                     <ChatMessage.Profile
                       src={profile}
                       nickname="지피T"
                       className="gap-2 mb-2 font-semibold"
                     />
                   ) : null}
-                  <ChatMessage.Bubble
-                    key={idx}
-                    type={idx % 2 === 0 ? 'system' : 'user'}
-                  >
-                    {q}
+
+                  <ChatMessage.Bubble key={index} type="system">
+                    {message.content}
                   </ChatMessage.Bubble>
-                  {qnaList.length - 1 === idx && qnaList.length !== 1 && (
-                    <ChatMessage.UndoButton
-                      onClick={backAnswerHandler}
-                      className="flex items-center justify-center gap-2 pt-3 text-sm text-white"
-                    />
-                  )}
-                </Fragment>
-              )
-            })}
-          </div>
+                </div>
+              }
+              falseCase={
+                <div id="chat-message-default-user" className="flex flex-col">
+                  <ChatMessage.Bubble key={index} type="user">
+                    {message.content}
+                  </ChatMessage.Bubble>
+                </div>
+              }
+            />
+          ))}
+
+          {qnaIndex.current >= 1 ? (
+            <ChatMessage.UndoButton
+              onClick={handleAnswerCancel}
+              className="flex items-center justify-center gap-2 pt-3 text-sm text-white"
+            />
+          ) : null}
         </ChatMessage>
         <div ref={scrollRef} />
       </div>
 
       <div className="relative w-full py-10 pt-4">
-        {isDone ? (
-          <ChatSubmitButton
-            onClick={() => {
-              handleChatResultSubmit(resultData)
-            }}
-            className="w-full h-[52px] py-2 text-lg font-semibold text-white rounded bg-gra drop-shadow-1"
-          />
-        ) : (
-          <form
-            onClick={e => {
-              e.preventDefault()
-            }}
-            id="chat-form"
-            className="relative"
-          >
-            {focus && (
-              <ChatChoice>
-                {questions.map((q, idx) => {
-                  if (
-                    MAX_QNA_LENGTH < index.current &&
-                    idx === MAX_QNA_LENGTH
-                  ) {
-                    return null
-                  }
-
-                  if (
-                    Math.round(qnaList.length / 2) !== idx + NEXT_INDEX ||
-                    !isDefaultChatFinished
-                  ) {
-                    return null
-                  }
-
-                  return (
-                    <div className="flex max-w-[500px] scrollbar-hide overflow-x-auto gap-3 mb-3.5 px-5">
-                      {selectType ? (
-                        <>
-                          <ChatChoice.Button
-                            text={q.answerF}
-                            onClick={() => handleUserAnswerSubmit(q.answerF)}
-                          />
-                          <ChatChoice.Button
-                            text={q.answerT}
-                            onClick={() => handleUserAnswerSubmit(q.answerT)}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <ChatChoice.Button
-                            text={q.answerT}
-                            onClick={() => handleUserAnswerSubmit(q.answerT)}
-                          />
-                          <ChatChoice.Button
-                            text={q.answerF}
-                            onClick={() => handleUserAnswerSubmit(q.answerF)}
-                          />
-                        </>
-                      )}
-                    </div>
-                  )
-                })}
-
-                <div className="absolute top-0 right-0 w-8 h-14 bg-gradient-to-l from-black to-transparent"></div>
-                <div className="absolute top-0 left-0 w-8 h-14 bg-gradient-to-r from-black to-transparent"></div>
-              </ChatChoice>
-            )}
-
-            <div className="flex mx-5 h-[52px]">
-              <ChatInput
-                className="text-white bg-gray-600 rounded-[4px] py-2 px-3.5 w-full mr-2 border-gray-600 border-2 focus:outline-none  focus:border-brand-blue box-border "
-                value={userAnswer}
-                maxLength={50}
-                onChange={handleUserAnswerChange}
-                placeholder="이럴 때 나는? (50자 이내)"
-                onFocus={setFocus}
-              />
-              <button
-                className="flex items-center justify-center w-14 shrink-0 bg-brand-blue rounded-[4px] disabled:bg-gray-400"
-                onClick={() => handleUserAnswerSubmit(userAnswer)}
-                disabled={!isDefaultChatFinished || !userAnswer}
-              >
-                <Icon name="send" fill="none" stroke="white" />
-              </button>
-            </div>
-          </form>
-        )}
+        <BooleanCase
+          value={isDone}
+          trueCase={
+            <ChatSubmitButton
+              className="w-full h-[52px] py-2 text-lg font-semibold text-white rounded bg-gra drop-shadow-1"
+              onClick={() => {
+                handleChatResultSubmit()
+              }}
+            />
+          }
+          falseCase={
+            <ChatForm
+              currentQuestion={questions[qnaIndex.current]}
+              handleUserAnswerSubmit={handleUserAnswerSubmit}
+              handleUserAnswerChange={handleUserAnswerChange}
+              userAnswer={userAnswer}
+              isLastSystemMessage={isLastSystemMessage}
+            />
+          }
+        />
       </div>
 
-      <BooleanCase
-        value={isLoading}
-        trueCase={
-          <ChatLoading>
-            <p className="text-2xl font-dunggeunmo">잠시 기다려줘 {nickname}</p>
-          </ChatLoading>
-        }
-        falseCase={null}
-      />
-
-      {focus && !isMobile && isDefaultChatFinished && qnaList.length < 10 && (
-        <div
-          onClick={e => {
-            e.stopPropagation()
-            selectTypeToggle()
-          }}
-          className="animate-bounce"
-          style={{
-            position: 'absolute',
-            cursor: 'pointer',
-            left: '20px',
-            bottom: '160px'
-          }}
-        >
-          스위치
-        </div>
-      )}
+      {isLoading ? (
+        <ChatLoading>
+          <p className="text-2xl font-dunggeunmo">잠시 기다려줘 {nickname}</p>
+        </ChatLoading>
+      ) : null}
     </div>
   )
 }
