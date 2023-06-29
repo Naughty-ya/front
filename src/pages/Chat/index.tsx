@@ -187,9 +187,7 @@ export default function Chat() {
           trueCase={
             <ChatSubmitButton
               className="w-full h-[52px] py-2 text-lg font-semibold text-white rounded bg-gra drop-shadow-1"
-              onClick={() => {
-                handleChatResultSubmit()
-              }}
+              onClick={handleChatResultSubmit}
             />
           }
           falseCase={
