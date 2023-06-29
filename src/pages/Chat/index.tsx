@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useRef, useState, useMemo, useEffect } from 'react'
-import questions from '../../assets/data/chat.json'
+import { useRef, useState, useMemo, useEffect, Fragment } from 'react'
+import questions from 'src/assets/data/chat.json'
 import {
   ChatMessage,
   ChatInput,
@@ -16,6 +16,10 @@ import { useNavigate } from 'react-router-dom'
 import bg from 'src/assets/img/chat-bg.webp'
 import { Icon } from 'src/components/core/Icon'
 import { isMobile } from 'react-device-detect'
+import { toast } from 'react-toastify'
+
+import { BooleanCase } from 'src/components/common/BooleanCase'
+import { useBoolean, useInterval, useScrollTo } from 'src/hooks'
 
 type TMessageListItem = {
   question: string
@@ -25,78 +29,44 @@ type TMessageListItem = {
 const MAX_QNA_LENGTH = 5
 const NEXT_INDEX = 1
 const TOTAL = 10
-const CHAT_DELAY = 500
 
 export default function Chat() {
+  const navigate = useNavigate()
+  const nickname = useQuery().get('nickname')
+
+  const index = useRef(1)
+  const { scrollRef, scrollIntoView } = useScrollTo<HTMLDivElement>()
+
+  const [focus, setFocus, setBlur] = useBoolean(false)
+  const [isLoading, setLoadingTrue, setLoadingFalse] = useBoolean(false)
+  const [selectType, , , selectTypeToggle] = useBoolean(true)
+
   const [userAnswer, setUserAnswer] = useState('')
   const [qnaList, setQnaList] = useState([questions[0].question])
-  const [isLoading, setLsLoading] = useState(false)
-  const [selectType, setSelectType] = useState(true)
-  const [focus, setFocus] = useState(false)
-  const nickname = useQuery().get('nickname')
-  const navigate = useNavigate()
-
-  if (!nickname || nickname === 'null') {
-    navigate('/')
-  }
-
   const [timestamp, setTimestamp] = useState(0)
-  const isDefaultChatFinished = useMemo(() => timestamp === 6, [timestamp])
 
-  useEffect(() => {
-    let time = setInterval(() => {
-      setTimestamp(pre => pre + 1)
-    }, CHAT_DELAY)
-
-    if (timestamp === 6) clearInterval(time)
-
-    return () => clearInterval(time)
-  }, [timestamp])
-
-  // navigate('/', { list: '리스트' })
-
-  /*  <Link to="new-path" state={{ some: "value" }} /> */
-  const handleChangeUserAnswer = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleUserAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserAnswer(e.target.value)
   }
-  const index = useRef(1)
-  const chatBoxRef = useRef<HTMLDivElement>(null)
 
-  // input 포커싱이벤트
-  const handleFocusInput = () => {
-    setFocus(true)
-  }
+  const isDefaultChatFinished = useMemo(() => timestamp === 6, [timestamp])
+  const isDone = useMemo(() => qnaList.length === TOTAL, [qnaList])
 
-  // 포커싱 아웃 이벤트
-  const hanldeBlurInput = () => {
-    setFocus(false)
-  }
-
-  const scrollToBottom = () => {
-    if (chatBoxRef.current) {
-      chatBoxRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end'
-      })
-    }
-  }
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [qnaList])
-
-  const handleSubmitUserAnswer = (userAnswer: string) => () => {
+  const handleUserAnswerSubmit = (userAnswer: string) => {
     const nextQuestion = questions[index.current].question
 
-    if (index.current <= MAX_QNA_LENGTH) {
-      setQnaList((prev: any) => [
-        ...prev,
-        userAnswer,
-        index.current != MAX_QNA_LENGTH + 1 && nextQuestion
-      ])
-      setUserAnswer('')
-      index.current += 1
-    } else return
+    setQnaList(prev => {
+      const newList = [...prev, userAnswer]
+
+      if (index.current !== MAX_QNA_LENGTH) {
+        newList.push(nextQuestion)
+      }
+
+      return newList
+    })
+
+    setUserAnswer('')
+    index.current += 1
   }
 
   const resultData = useMemo(() => {
@@ -113,14 +83,8 @@ export default function Chat() {
     return list
   }, [qnaList])
 
-  /* 
-  1. 최종 버튼을 누르면 api 함수를 실행한다.
-  2. 로딩 UI가 표시된다. 2초동안.
-  3. response값을 가지고 result 페이지로 라우팅한다.
-*/
-
-  const handleSubmitChatResult = async (resultData: TMessageListItem[]) => {
-    setLsLoading(true)
+  const handleChatResultSubmit = async (resultData: TMessageListItem[]) => {
+    setLoadingTrue()
     try {
       const data = await new FetchClient().post(
         `${import.meta.env.VITE_BASE_URL}/api/openai`,
@@ -129,11 +93,10 @@ export default function Chat() {
         }
       )
       navigate('/result', { state: data })
-      setLsLoading(false)
     } catch (e) {
-      setLsLoading(false)
-      navigate(`/chat?nickname=${nickname}`)
-      throw Error('fetch failed')
+      toast('알 수 없는 에러가 발생했습니다.')
+    } finally {
+      setLoadingFalse()
     }
   }
 
@@ -141,6 +104,18 @@ export default function Chat() {
     setQnaList([...qnaList].slice(0, qnaList.length - 2))
     index.current -= 1
   }
+
+  useInterval({
+    callback: () => {
+      setTimestamp(pre => pre + 1)
+    },
+    delay: 500,
+    condition: timestamp < 6
+  })
+
+  useEffect(() => {
+    scrollIntoView()
+  }, [qnaList])
 
   return (
     <div
@@ -165,21 +140,20 @@ export default function Chat() {
       <div
         id="chat-message-wrapper"
         className="flex-1 p-5 pt-10 overflow-auto text-gray-800 scrollbar-hide"
-        onClick={hanldeBlurInput}
       >
         <ChatMessage>
           <div id="chat-message-default-system" className="flex flex-col">
             {timestamp > 1 && (
-              <ChatMessage.Profile
-                src={profile}
-                nickname="지피T"
-                className="gap-2 mb-2 font-semibold"
-              />
-            )}
-            {timestamp > 1 && (
-              <ChatMessage.Bubble type="system">
-                안녕 {nickname}.
-              </ChatMessage.Bubble>
+              <>
+                <ChatMessage.Profile
+                  src={profile}
+                  nickname="지피T"
+                  className="gap-2 mb-2 font-semibold"
+                />
+                <ChatMessage.Bubble type="system">
+                  안녕 {nickname}.
+                </ChatMessage.Bubble>
+              </>
             )}
             {timestamp > 2 && (
               <ChatMessage.Bubble type="system">
@@ -207,7 +181,7 @@ export default function Chat() {
               if (MAX_QNA_LENGTH < index.current && idx === TOTAL) return null
               if (!isDefaultChatFinished) return null
               return (
-                <React.Fragment key={idx}>
+                <Fragment key={idx}>
                   {idx % 2 === 0 ? (
                     <ChatMessage.Profile
                       src={profile}
@@ -227,24 +201,22 @@ export default function Chat() {
                       className="flex items-center justify-center gap-2 pt-3 text-sm text-white"
                     />
                   )}
-                </React.Fragment>
+                </Fragment>
               )
             })}
           </div>
         </ChatMessage>
-        <div ref={chatBoxRef} />
+        <div ref={scrollRef} />
       </div>
 
       <div className="relative w-full py-10 pt-4">
-        {qnaList.length >= 10 ? (
-          <div className="px-5">
-            <ChatSubmitButton
-              onClick={() => {
-                handleSubmitChatResult(resultData)
-              }}
-              className="w-full h-[52px] py-2 text-lg font-semibold text-white rounded bg-gra drop-shadow-1"
-            />
-          </div>
+        {isDone ? (
+          <ChatSubmitButton
+            onClick={() => {
+              handleChatResultSubmit(resultData)
+            }}
+            className="w-full h-[52px] py-2 text-lg font-semibold text-white rounded bg-gra drop-shadow-1"
+          />
         ) : (
           <form
             onClick={e => {
@@ -253,72 +225,69 @@ export default function Chat() {
             id="chat-form"
             className="relative"
           >
-            <ChatChoice>
-              {questions.map((q, idx) => {
-                if (MAX_QNA_LENGTH < index.current && idx === MAX_QNA_LENGTH)
-                  return null
+            {focus && (
+              <ChatChoice>
+                {questions.map((q, idx) => {
+                  if (
+                    MAX_QNA_LENGTH < index.current &&
+                    idx === MAX_QNA_LENGTH
+                  ) {
+                    return null
+                  }
 
-                if (
-                  Math.round(qnaList.length / 2) !== idx + NEXT_INDEX ||
-                  !isDefaultChatFinished
-                )
-                  return null
+                  if (
+                    Math.round(qnaList.length / 2) !== idx + NEXT_INDEX ||
+                    !isDefaultChatFinished
+                  ) {
+                    return null
+                  }
 
-                return (
-                  <div className="flex max-w-[500px] scrollbar-hide overflow-x-auto gap-3 mb-3.5 px-5">
-                    {focus && (
-                      <>
-                        {selectType ? (
-                          <>
-                            <ChatChoice.Button
-                              text={q.answerF}
-                              onClick={handleSubmitUserAnswer(q.answerF)}
-                              onFocus={handleFocusInput}
-                            />
-                            <ChatChoice.Button
-                              text={q.answerT}
-                              onClick={handleSubmitUserAnswer(q.answerT)}
-                              onFocus={handleFocusInput}
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <ChatChoice.Button
-                              text={q.answerT}
-                              onClick={handleSubmitUserAnswer(q.answerT)}
-                              onFocus={handleFocusInput}
-                            />
-                            <ChatChoice.Button
-                              text={q.answerF}
-                              onClick={handleSubmitUserAnswer(q.answerF)}
-                              onFocus={handleFocusInput}
-                            />
-                          </>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )
-              })}
-              {focus && (
-                <>
-                  <div className="absolute top-0 right-0 w-8 h-14 bg-gradient-to-l from-black to-transparent"></div>
-                  <div className="absolute top-0 left-0 w-8 h-14 bg-gradient-to-r from-black to-transparent"></div>
-                </>
-              )}
-            </ChatChoice>
+                  return (
+                    <div className="flex max-w-[500px] scrollbar-hide overflow-x-auto gap-3 mb-3.5 px-5">
+                      {selectType ? (
+                        <>
+                          <ChatChoice.Button
+                            text={q.answerF}
+                            onClick={() => handleUserAnswerSubmit(q.answerF)}
+                          />
+                          <ChatChoice.Button
+                            text={q.answerT}
+                            onClick={() => handleUserAnswerSubmit(q.answerT)}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <ChatChoice.Button
+                            text={q.answerT}
+                            onClick={() => handleUserAnswerSubmit(q.answerT)}
+                          />
+                          <ChatChoice.Button
+                            text={q.answerF}
+                            onClick={() => handleUserAnswerSubmit(q.answerF)}
+                          />
+                        </>
+                      )}
+                    </div>
+                  )
+                })}
+
+                <div className="absolute top-0 right-0 w-8 h-14 bg-gradient-to-l from-black to-transparent"></div>
+                <div className="absolute top-0 left-0 w-8 h-14 bg-gradient-to-r from-black to-transparent"></div>
+              </ChatChoice>
+            )}
+
             <div className="flex mx-5 h-[52px]">
               <ChatInput
                 className="text-white bg-gray-600 rounded-[4px] py-2 px-3.5 w-full mr-2 border-gray-600 border-2 focus:outline-none  focus:border-brand-blue box-border "
                 value={userAnswer}
                 maxLength={50}
-                onChange={handleChangeUserAnswer}
+                onChange={handleUserAnswerChange}
                 placeholder="이럴 때 나는? (50자 이내)"
-                onFocus={handleFocusInput}
+                onFocus={setFocus}
               />
               <button
                 className="flex items-center justify-center w-14 shrink-0 bg-brand-blue rounded-[4px] disabled:bg-gray-400"
-                onClick={handleSubmitUserAnswer(userAnswer)}
+                onClick={() => handleUserAnswerSubmit(userAnswer)}
                 disabled={!isDefaultChatFinished || !userAnswer}
               >
                 <Icon name="send" fill="none" stroke="white" />
@@ -327,17 +296,22 @@ export default function Chat() {
           </form>
         )}
       </div>
-      {isLoading && (
-        <ChatLoading className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-black pointer-evente-none opacity-80">
-          <Icon name="spinner" className="animate-spin" />
-          <p className="text-2xl font-dunggeunmo">{`잠시 기다려줘 ${nickname}`}</p>
-        </ChatLoading>
-      )}
+
+      <BooleanCase
+        value={isLoading}
+        trueCase={
+          <ChatLoading>
+            <p className="text-2xl font-dunggeunmo">잠시 기다려줘 {nickname}</p>
+          </ChatLoading>
+        }
+        falseCase={null}
+      />
+
       {focus && !isMobile && isDefaultChatFinished && qnaList.length < 10 && (
         <div
           onClick={e => {
             e.stopPropagation()
-            setSelectType(!selectType)
+            selectTypeToggle()
           }}
           className="animate-bounce"
           style={{
@@ -353,9 +327,3 @@ export default function Chat() {
     </div>
   )
 }
-
-/**
- * 1. 객관식 버튼 draggable 하게 만들기.
- * 2. 구글 애널리틱스 추적코드 삽입하기 (선택사항)
- * 3. 넷틀리파이 배포하기
- */
